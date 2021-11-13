@@ -1,12 +1,12 @@
 #include "pch.h"
-#include "Places.h"
+#include "Lumber.h"
 
 int main()
 {
     try
     {
         std::srand(std::time(NULL));
-        Place p("Test", 0.001);
+        Lumber p();
         p.change_paint(10);
         p.add(Dice(6), 4);
         int count = 1;

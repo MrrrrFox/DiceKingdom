@@ -22,5 +22,5 @@ class Place
 	int roll();
 	void change_paint(int n);
 
-	virtual int create_resources() = 0;
+	//virtual int create_resources() = 0;
 };

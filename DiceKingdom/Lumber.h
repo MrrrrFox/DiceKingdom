@@ -1,9 +1,9 @@
 #pragma once
 #include "Places.h"
-/*
+
 class Lumber : public Place
 {
-	Lumber() : Place("Lumber Camp") {}
 	public:
+	Lumber() : Place("Lumber Camp") {}
 	int create_resources();
-};*/
+};

@@ -6,8 +6,7 @@ int main()
     try
     {
         std::srand(std::time(NULL));
-        //Lumber p();
-        Place p("Lumber camp");
+        Lumber p;
         p.change_paint(10);
         p.add(Dice(6), 4);
         int count = 1;

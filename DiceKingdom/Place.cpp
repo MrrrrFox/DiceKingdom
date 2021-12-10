@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Places.h"
+#include "Place.h"
 
 bool Place::is_empty()
 {
@@ -108,4 +108,9 @@ void Place::change_paint(int n)
 	paint += n;
 	if(paint < 0)
 		std::cerr << "Warning: Negative amount of paint in Place\n";
+}
+
+std::string Place::get_name()
+{
+	return name;
 }

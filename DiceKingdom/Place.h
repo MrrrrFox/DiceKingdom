@@ -21,6 +21,7 @@ class Place
 	void remove(const Dice d, int n = 1);
 	int roll();
 	void change_paint(int n);
+	std::string get_name();
 
 	virtual int create_resources() = 0;
 };

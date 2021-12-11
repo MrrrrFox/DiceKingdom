@@ -6,7 +6,7 @@ DiceKingdom::DiceKingdom()
 {
 	Place * p1 = new Lumber;
 	places.push_back(p1);
-	Place* p2 = new Lumber;
+	Place * p2 = new Lumber;
 	places.push_back(p2);
 }
 
@@ -20,4 +20,10 @@ void DiceKingdom::show_places()
 	for(int i=0; i<places.size(); ++i)
 		std::cout << places[i]->get_name() << " ";
 	std::cout << std::endl;
+}
+
+void DiceKingdom::clear()
+{
+	places.clear();
+	places.shrink_to_fit();
 }

@@ -6,9 +6,15 @@ int main()
 {
     try
     {
-        GameManager Game;
+        int WIDTH = 600, HEIGHT = 400;
+        sf::ContextSettings context(24, 0, 0, 4, 5);
+        sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Dice Kingdom", 7U, context);
+        GameManager Game(&window, WIDTH, HEIGHT);
 
         Game.Run();
+
+        Game.CloseGame();
+
         /*
         std::srand(std::time(NULL));
         Lumber p;

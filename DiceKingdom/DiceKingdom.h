@@ -10,4 +10,5 @@ public:
 	DiceKingdom();
 	std::vector<Place *> get_places();
 	void show_places();
+	void clear();
 };

@@ -17,6 +17,7 @@ class Place
 	Place(std::string _name, float _dmg_modifier = 1) : name(_name), damage_modifier(_dmg_modifier), paint(0) {}
 	bool is_empty();
 	int count_dices();
+	// int count_dices(PARAMETERS);
 	void add(const Dice d, int n = 1);
 	void remove(const Dice d, int n = 1);
 	int roll();

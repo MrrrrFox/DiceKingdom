@@ -52,7 +52,7 @@ int Place::roll()
 			result += pips;
 			if(pips == 1 && damage_modifier > 0)
 			{
-				int destroyed = 3;   // dices with damage value lower than this number will not be destroyed, only damaged
+				unsigned int destroyed = 3;   // dices with damage value lower than this number will not be destroyed, only damaged
 				if(damage_modifier < 1)
 				{
 					float check;
@@ -60,7 +60,9 @@ int Place::roll()
 					if(check > damage_modifier)
 						continue;
 				}
-				if(damage_modifier > 1)
+				if(damage_modifier > 4)
+					destroyed = 0;
+				else if(damage_modifier > 1)
 					destroyed = 4 - static_cast<int> (damage_modifier);
 				if(it->first.damage < destroyed)
 					damaged[it->first] += 1;

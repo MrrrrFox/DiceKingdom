@@ -26,7 +26,6 @@ struct DiceCompare
 	}
 };
 
-
 struct DiceCompareWithoutHP
 {
 	bool operator()(const DiceWithoutHP& d1, const DiceWithoutHP& d2) const

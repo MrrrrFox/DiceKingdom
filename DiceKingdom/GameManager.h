@@ -1,18 +1,16 @@
 #pragma once
 #include "enums.h"
-#include "GraphicsManager.h"
+#include "SceneLayout.h"
 #include "DiceKingdom.h"
 
 
 class GameManager
 {
 	GameView currentView;
-	bool isRunning;
-	bool isPlaying;
-	int WIDTH;
-	int HEIGHT;
+	bool isRunning, isPlaying;
+	int WIDTH = 600, HEIGHT = 400;
 
-	GraphicsManager GM;
+	SceneLayout sceneLayout;
 	DiceKingdom DK;
 
 	std::vector<std::vector<WorldTerrain>> world_map;
@@ -20,6 +18,7 @@ class GameManager
 	sf::RenderWindow * window;
 	sf::Clock deltaClock;
 	sf::Time deltaTime;
+	sf::Time procTime;
 
 public:
 	GameManager(sf::RenderWindow * window, int WIDTH, int HEIGHT);

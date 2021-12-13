@@ -5,7 +5,7 @@
 int main()
 {
     try
-    {
+    {/*
         int WIDTH = 600, HEIGHT = 400;
         sf::ContextSettings context(24, 0, 0, 4, 5);
         sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "Dice Kingdom", 7U, context);
@@ -14,8 +14,8 @@ int main()
         Game.Run();
 
         Game.CloseGame();
-
-        /*
+        */
+        
         std::srand(std::time(NULL));
         Lumber p;
         p.change_paint(10);
@@ -32,7 +32,7 @@ int main()
             std::cout << count << '\t' << p.count_dices() << '\t' << p.roll() << "\n";
             count++;
         }
-        */
+        
 
     }
     catch(std::exception& e)

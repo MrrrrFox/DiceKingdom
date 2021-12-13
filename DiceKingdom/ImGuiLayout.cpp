@@ -13,21 +13,21 @@ void ImGuiLayout::drawMaterialsBar(std::map<std::string, int>)
 
 		ImGui::TableNextRow();
 
-		for (int row = 0; row < 2; ++row)
-		{
-			ImGui::TableSetColumnIndex(0);
-			c_pos = ImGui::GetCursorPos();
-			ImGui::SetCursorPos(ImVec2(c_pos.x + (col_widths[0] - ImGui::CalcTextSize(texts[row].data()).x) / 2.0f, c_pos.y + padding_y));
-			ImGui::Text(texts[row].data());
+		//for (int row = 0; row < 2; ++row)
+		//{
+		//	ImGui::TableSetColumnIndex(0);
+		//	c_pos = ImGui::GetCursorPos();
+		//	ImGui::SetCursorPos(ImVec2(c_pos.x + (col_widths[0] - ImGui::CalcTextSize(texts[row].data()).x) / 2.0f, c_pos.y + padding_y));
+		//	ImGui::Text(texts[row].data());
 
-			ImGui::TableSetColumnIndex(1);
-			c_pos = ImGui::GetCursorPos();
-			ImGui::SetCursorPos(ImVec2(c_pos.x + col_widths[1] - 15.0f, c_pos.y));
-			ImGui::PushID(btn_id++);
-			if (ImGui::Button("-"))
-				std::cout << "-" + texts[row] << std::endl;
-			ImGui::PopID();
-		}
+		//	ImGui::TableSetColumnIndex(1);
+		//	c_pos = ImGui::GetCursorPos();
+		//	ImGui::SetCursorPos(ImVec2(c_pos.x + col_widths[1] - 15.0f, c_pos.y));
+		//	ImGui::PushID(btn_id++);
+		//	if (ImGui::Button("-"))
+		//		std::cout << "-" + texts[row] << std::endl;
+		//	ImGui::PopID();
+		//}
 
 		ImGui::EndTable();
 	}

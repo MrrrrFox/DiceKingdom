@@ -8,6 +8,9 @@ DiceKingdom::DiceKingdom()
 	places.push_back(p1);
 	Place * p2 = new Lumber;
 	places.push_back(p2);
+
+	materials["wood"] = 10;
+	materials["paint"] = 20;
 }
 
 std::vector<Place *> DiceKingdom::get_places()

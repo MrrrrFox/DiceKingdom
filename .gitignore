@@ -2,6 +2,7 @@ imgui
 imgui.ini
 
 SFML-2.5.1
+freeglut
 
 x64
 .vs

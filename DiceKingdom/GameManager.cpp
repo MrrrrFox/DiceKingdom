@@ -10,6 +10,10 @@ GameManager::GameManager(sf::RenderWindow * _window, int _WIDTH, int _HEIGHT)
 	WIDTH = _WIDTH;
 	HEIGHT = _HEIGHT;
 
+	procTime = sf::seconds(1.0f);
+
+	sceneLayout.set_width_height(WIDTH,HEIGHT);
+
 	world_map = { {WorldTerrain::FOG_OF_WAR,	WorldTerrain::FOG_OF_WAR,	WorldTerrain::FOG_OF_WAR,		WorldTerrain::FOG_OF_WAR,	WorldTerrain::FOG_OF_WAR},
 				  {WorldTerrain::FOG_OF_WAR,	WorldTerrain::SEA,			WorldTerrain::SEA,				WorldTerrain::SEA,			WorldTerrain::FOG_OF_WAR},
 				  {WorldTerrain::FOG_OF_WAR,	WorldTerrain::SEA,			WorldTerrain::DICE_KINGDOM,		WorldTerrain::SEA,			WorldTerrain::FOG_OF_WAR},
@@ -23,9 +27,9 @@ GameManager::GameManager(sf::RenderWindow * _window, int _WIDTH, int _HEIGHT)
 	ImGui::SFML::Init(*window);
 
 	ImGuiStyle& style = ImGui::GetStyle();
-	style.WindowTitleAlign = ImVec2(0.5f, 0.5f);
+	/*style.WindowTitleAlign = ImVec2(0.5f, 0.5f);
 	style.Colors[ImGuiCol_TitleBg] = ImVec4(0.50f, 0.50f, 0.50f, 1.0f);
-	style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.50f, 0.50f, 0.50f, 1.0f);
+	style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.50f, 0.50f, 0.50f, 1.0f);*/
 
 
 
@@ -50,7 +54,11 @@ void GameManager::Run()
 			}
 			if (event.type == sf::Event::KeyPressed)
 			{
-				if (event.key.code == sf::Keyboard::Space)
+				if (event.key.code == sf::Keyboard::Enter)
+				{
+					sceneLayout.set_perspective_projection(!sceneLayout.get_perspective_projection());
+				}
+				else if (event.key.code == sf::Keyboard::Space)
 				{
 					if (currentView == GameView::MENU)
 					{
@@ -105,7 +113,7 @@ void GameManager::Run()
 
 		if (isPlaying)
 		{
-			if (deltaTime > sf::seconds(1.0f))
+			if (deltaTime > procTime)
 			{
 				Proc();
 				deltaTime = sf::seconds(0.0f);
@@ -125,124 +133,97 @@ void GameManager::DrawScene()
 	switch (currentView)
 	{
 	case GameView::MENU:
-		GM.DrawMenu();
+		sceneLayout.DrawMenu();
 		break;
 	case GameView::MAP:
-		GM.DrawWorldMap(world_map);
+		sceneLayout.DrawWorldMap(world_map);
 		break;
 	case GameView::KINGDOM:
 	case GameView::KINGDOM_LUMBER:
 	case GameView::KINGDOM_RIG:
-		GM.DrawKingdom(DK.get_places(), currentView);
+		sceneLayout.DrawKingdom(DK.get_places(), currentView);
 		break;
 	default:
-		std::cerr << "unknown view to draw";
+		std::cerr << "unknown view to draw: " << (int)currentView << std::endl;
 	}
 }
 
 void GameManager::DrawImGui()
 {
 	ImGui::SFML::Update(*window, deltaClock.restart());
-	int w = 5, s=10;
-	static int showMaterial = 0;
-	std::string text1, text2;
-	std::string texts[2] = { "-", "+" };
-	float cw;
+	int btn_id = 0;
+	int tab[3] = { 5, 10, 30 };
+	float padding_y = 3.5f;
+	float col_widths[4] = {30.0f, 80.0f, 50.0f, 80.0f};
+	ImVec2 c_pos;
+	std::string texts[3] = { "D4", "D6", "D20" };
+	ImVec4 color = { 0.0f, 0.0f, 0.0f, 0.7f };
+	std::string menuText = "PRESS SPACE TO START A NEW GAME";
 	
 	switch (currentView)
 	{
+	case GameView::MENU:
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 20.0f);
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, color);
+
+		ImGui::SetNextWindowPos(ImVec2(0.3f * WIDTH, 0.9f * HEIGHT));
+		ImGui::SetNextWindowSize(ImVec2(0.4f * WIDTH, 20.0f));
+		ImGui::Begin("Title Bar", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
+			ImGui::SetCursorPosX((ImGui::GetWindowSize().x - ImGui::CalcTextSize(menuText.data()).x) * 0.5f);
+			ImGui::Text(menuText.data());
+		ImGui::End();
+
+		ImGui::PopStyleColor();
+		ImGui::PopStyleVar();
+		break;
 	case GameView::KINGDOM_LUMBER:
-		ImGui::SetNextWindowPos(ImVec2(WIDTH/4, HEIGHT/4));
-		ImGui::SetNextWindowSize(ImVec2(WIDTH/2, HEIGHT/2));
+		ImGui::SetNextWindowPos(ImVec2(WIDTH/4.0f, HEIGHT/4.0f));
+		ImGui::SetNextWindowSize(ImVec2(WIDTH/2.0f, HEIGHT/2.0f));
 		ImGui::Begin("Lumber Camp", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
-			if (ImGui::Button("Wood"))
-				showMaterial = 0;
-			ImGui::SameLine();
-			if (ImGui::Button("Stone"))
-				showMaterial = 1;
-			text1 = "Lumber";
-			text2 = "Idle";
-			cw = ImGui::GetColumnWidth();
 
-			switch (showMaterial)
+		if (ImGui::BeginTable("Lumber Camp", 4, ImGuiTableFlags_BordersInnerH))
+		{
+			ImGui::TableSetupColumn("dice type", ImGuiTableColumnFlags_WidthFixed, col_widths[0]);
+			ImGui::TableSetupColumn("decreasing values", ImGuiTableColumnFlags_WidthFixed, col_widths[1]);
+			ImGui::TableSetupColumn("quantity", ImGuiTableColumnFlags_WidthFixed, col_widths[2]);
+			ImGui::TableSetupColumn("increasing values", ImGuiTableColumnFlags_WidthFixed, col_widths[3]);
+
+			for (int row = 0; row < 3; ++row)
 			{
-			case 0:
-				ImGui::Text("Lumber");
+				ImGui::TableNextRow();
 
-				ImGui::SameLine(ImGui::GetColumnWidth() - ImGui::CalcTextSize(text2.c_str()).x + 8);
-				ImGui::Text("Idle");
+				ImGui::TableSetColumnIndex(0);
+				c_pos = ImGui::GetCursorPos();
+				ImGui::SetCursorPos(ImVec2(c_pos.x + (col_widths[0] - ImGui::CalcTextSize(texts[row].data()).x) / 2.0f, c_pos.y+padding_y));
+				ImGui::Text(texts[row].data());
 
-				ImGui::PushItemWidth(cw);
-				ImGui::SliderInt("", &w, 0, 10);
-				//for (int i = 0; i < 2; ++i)
-				//{
-				//	//ImGui::BeginChild("Haha");
-				//	if (ImGui::Button(texts[i].data()))
-				//	{
-				//		std::cout << i << std::endl;
-				//	}
-				//	ImGui::SameLine();
-				//	ImGui::Text("A");
-				//	ImGui::SameLine();
-				//	if (ImGui::Button(texts[i].data()))
-				//	{
-				//		std::cout << i << std::endl;
-				//	}
-				//	//ImGui::EndChild();
-				//}
-						
-				break;
-			case 1:
-				ImGui::Text("Lumber");
+				ImGui::TableSetColumnIndex(1);
+				c_pos = ImGui::GetCursorPos();
+				ImGui::SetCursorPos(ImVec2(c_pos.x + col_widths[1] - 15.0f, c_pos.y));
+				ImGui::PushID(btn_id++);
+				if (ImGui::Button("-"))
+					std::cout << "-" + texts[row] << std::endl;
+				ImGui::PopID();
+					
 
-				ImGui::SameLine(ImGui::GetColumnWidth() - ImGui::CalcTextSize(text2.c_str()).x + 8);
-				ImGui::Text("Idle");
+				ImGui::TableSetColumnIndex(2);
+				c_pos = ImGui::GetCursorPos();
+				ImGui::SetCursorPos(ImVec2(c_pos.x + (col_widths[2] - ImGui::CalcTextSize(std::to_string(tab[row]).data()).x) / 2.0f, c_pos.y));
+				ImGui::Text(std::to_string(tab[row]).data());
 
-				ImGui::PushItemWidth(cw);
-				ImGui::SliderInt("", &s, 0, 20);
-				break;
-			default:
-				std::cerr << "unknown material: " << showMaterial << std::endl;
+				ImGui::TableSetColumnIndex(3);
+				ImGui::PushID(btn_id++);
+				if (ImGui::Button("+"))
+					std::cout << "+" + texts[row] << std::endl;
+				ImGui::PopID();
 			}
+
+			ImGui::EndTable();
+		}
 		ImGui::End();
 		break;
 	case GameView::KINGDOM_RIG:
-		ImGui::SetNextWindowPos(ImVec2(WIDTH / 4, HEIGHT / 4));
-		ImGui::SetNextWindowSize(ImVec2(WIDTH / 2, HEIGHT / 2));
-		ImGui::Begin("Rig Platform", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
-		if (ImGui::Button("Wood"))
-			showMaterial = 0;
-		ImGui::SameLine();
-		if (ImGui::Button("Stone"))
-			showMaterial = 1;
-		text1 = "Rig";
-		text2 = "Idle";
-		cw = ImGui::GetColumnWidth();
-
-		switch (showMaterial)
-		{
-		case 0:
-			ImGui::Text("Rig");
-
-			ImGui::SameLine(ImGui::GetColumnWidth() - ImGui::CalcTextSize(text2.c_str()).x + 8);
-			ImGui::Text("Idle");
-
-			ImGui::PushItemWidth(cw);
-			ImGui::SliderInt("", &w, 0, 10);
-			break;
-		case 1:
-			ImGui::Text("Rig");
-
-			ImGui::SameLine(ImGui::GetColumnWidth() - ImGui::CalcTextSize(text2.c_str()).x + 8);
-			ImGui::Text("Idle");
-
-			ImGui::PushItemWidth(cw);
-			ImGui::SliderInt("", &s, 0, 20);
-			break;
-		default:
-			std::cerr << "unknown material: " << showMaterial << std::endl;
-		}
-		ImGui::End();
+		std::cout << "SHOWING RIG PANEL" << std::endl;
 		break;
 	}
 
@@ -297,8 +278,8 @@ void GameManager::reshapeScreen(sf::Vector2u size)
 	glViewport(0, 0, (GLsizei)size.x, (GLsizei)size.y);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//gluPerspective(45.0f, (GLdouble)size.x / (GLdouble)size.y, 0.1, 100.0);
-	glOrtho(-1.245 * ((GLdouble)size.x / (GLdouble)size.y), 1.245 * ((GLdouble)size.x / (GLdouble)size.y), -1.245, 1.245, -3.0, 12.0);
+	if (sceneLayout.get_perspective_projection()) gluPerspective(45.0f, (GLdouble)size.x / (GLdouble)size.y, 0.1, 100.0);
+	else glOrtho(-((GLdouble)size.x / (GLdouble)size.y), ((GLdouble)size.x / (GLdouble)size.y), -1.0, 1.0, -3.0, 12.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }

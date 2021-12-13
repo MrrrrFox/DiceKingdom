@@ -52,7 +52,7 @@ int Place::roll()
 			result += pips;
 			if(pips == 1 && damage_modifier > 0)
 			{
-				int destroyed = 3;   // dices with damage value lower than this number will not be destroyed, only damaged
+				unsigned int destroyed = 3;   // dices with damage value lower than this number will not be destroyed, only damaged
 				if(damage_modifier < 1)
 				{
 					float check;
@@ -60,7 +60,9 @@ int Place::roll()
 					if(check > damage_modifier)
 						continue;
 				}
-				if(damage_modifier > 1)
+				if(damage_modifier > 4)
+					destroyed = 0;
+				else if(damage_modifier > 1)
 					destroyed = 4 - static_cast<int> (damage_modifier);
 				if(it->first.damage < destroyed)
 					damaged[it->first] += 1;
@@ -113,7 +115,7 @@ void Place::change_paint(int n)
 std::map<DiceWithoutHP, int, DiceCompareWithoutHP> Place::return_dice_array()
 {
 	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> return_this;
-	for (auto it = m.begin(); it != m.end(); it++)
+	for(auto it = m.begin(); it != m.end(); it++)
 	{
 		return_this[it->first.dice] += it->second;
 	}

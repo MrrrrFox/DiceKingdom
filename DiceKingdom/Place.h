@@ -24,5 +24,7 @@ class Place
 	void change_paint(int n);
 	std::string get_name();
 
+	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> return_dice_array();
+
 	virtual int create_resources() = 0;
 };

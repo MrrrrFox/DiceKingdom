@@ -48,7 +48,7 @@ int Place::roll()
 		for(int i = 0; i < it->second; i++)
 		{
 			int pips;
-			pips = 1 + std::rand() / ((RAND_MAX + 1u) / it->first.faces);
+			pips = 1 + std::rand() / ((RAND_MAX + 1u) / it->first.dice.faces);
 			result += pips;
 			if(pips == 1 && damage_modifier > 0)
 			{
@@ -96,7 +96,7 @@ int Place::roll()
 			else
 			{
 				remove(it->first);
-				add(Dice(it->first.faces, it->first.damage + dmg));
+				add(Dice(it->first.dice.faces, it->first.damage + dmg));
 			}
 		}
 	}
@@ -108,6 +108,16 @@ void Place::change_paint(int n)
 	paint += n;
 	if(paint < 0)
 		std::cerr << "Warning: Negative amount of paint in Place\n";
+}
+
+std::map<DiceWithoutHP, int, DiceCompareWithoutHP> Place::return_dice_array()
+{
+	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> return_this;
+	for(auto it = m.begin(); it != m.end(); it++)
+	{
+		return_this[it->first.dice] += it->second;
+	}
+	return return_this;
 }
 
 std::string Place::get_name()

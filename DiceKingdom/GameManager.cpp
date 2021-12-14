@@ -128,16 +128,16 @@ void GameManager::DrawImGui()
 		imGuiLayout.drawMenuInfo();
 		break;
 	case GameView::MAP:
-		imGuiLayout.drawMaterialsBar(DK.get_materials());
+		//imGuiLayout.drawMaterialsBar(DK.get_materials());
 		// draw map
 		break;
 	case GameView::KINGDOM:
-		imGuiLayout.drawMaterialsBar(DK.get_materials());
+		//imGuiLayout.drawMaterialsBar(DK.get_materials());
 		// draw kingdom
 		break;
 	case GameView::KINGDOM_LUMBER:
-		imGuiLayout.drawMaterialsBar(DK.get_materials());
-		imGuiLayout.drawPlacePanel(DK.get_place(KingdomPlace::LUMBER));
+		//imGuiLayout.drawMaterialsBar(DK.get_materials());
+		//imGuiLayout.drawPlacePanel(DK.get_place(KingdomPlace::LUMBER));
 		break;
 	}
 

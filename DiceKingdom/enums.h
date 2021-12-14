@@ -9,14 +9,14 @@ enum class GameView
 };
 
 
-enum class WorldTerrain
+enum class TerrainType
 {
 	DICE_KINGDOM
 	, SEA
 	, FOG_OF_WAR
 };
 
-enum class Places
+enum class KingdomPlace
 {
 	LUMBER
 };

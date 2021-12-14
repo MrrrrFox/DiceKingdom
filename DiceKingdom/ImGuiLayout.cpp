@@ -7,6 +7,11 @@ void ImGuiLayout::initImGui(sf::RenderWindow * _window, int width, int height)
 	ImGui::SFML::Init(*_window);
 	WIDTH = width;
 	HEIGHT = height;
+
+	ImGuiStyle& style = ImGui::GetStyle();
+	style.WindowTitleAlign = ImVec2(0.5f, 0.5f);
+	style.Colors[ImGuiCol_TitleBg] = gray;
+	style.Colors[ImGuiCol_TitleBgActive] = gray;
 }
 
 void ImGuiLayout::terminateImGui()
@@ -17,7 +22,7 @@ void ImGuiLayout::terminateImGui()
 void ImGuiLayout::drawMenuInfo()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 20.0f);
-	ImGui::PushStyleColor(ImGuiCol_WindowBg, black_a_70);
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, black_70);
 
 	ImGui::SetNextWindowPos(ImVec2(0.3f * WIDTH, 0.9f * HEIGHT));
 	ImGui::SetNextWindowSize(ImVec2(0.4f * WIDTH, 20.0f));
@@ -59,6 +64,10 @@ void ImGuiLayout::drawPlacePanel(Place & place)
 	
 	std::string dice_type_name;
 	int dice_type_quantity;
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 10.0f);
+	ImGui::PushStyleColor(ImGuiCol_Button, gray);
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, lightgray);
 
 	ImGui::SetNextWindowPos(ImVec2(WIDTH / 4.0f, HEIGHT / 4.0f));
 	ImGui::SetNextWindowSize(ImVec2(WIDTH / 2.0f, HEIGHT / 2.0f));
@@ -106,14 +115,10 @@ void ImGuiLayout::drawPlacePanel(Place & place)
 			}
 			ImGui::PopID();
 		}
-
 		ImGui::EndTable();
 	}
 	ImGui::End();
-}
 
-/*
-	style.WindowTitleAlign = ImVec2(0.5f, 0.5f);
-	style.Colors[ImGuiCol_TitleBg] = ImVec4(0.50f, 0.50f, 0.50f, 1.0f);
-	style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.50f, 0.50f, 0.50f, 1.0f);*
-*/
+	ImGui::PopStyleColor(2);
+	ImGui::PopStyleVar();
+}

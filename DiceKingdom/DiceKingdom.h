@@ -11,7 +11,7 @@ class DiceKingdom
 public:
 	DiceKingdom();
 
-	Place& get_place(Places place);
+	Place& get_place(KingdomPlace place);
 	std::unordered_map<std::string, int> get_materials();
-	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> get_dices_from(Places place);
+	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> get_dices_from(KingdomPlace place);
 };

@@ -7,7 +7,6 @@ freeglut
 x64
 .vs
 *.sln
-*.vcxproj*
 
 # Prerequisites
 *.d

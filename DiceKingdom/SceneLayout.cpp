@@ -61,9 +61,10 @@ void SceneLayout::set_width_height(int width, int height)
 
 void SceneLayout::DrawMenu()
 {
+	Spherical menu_camera_north = Spherical(menu_camera.distance, menu_camera.theta, menu_camera.phi + 0.01f);
 	gluLookAt(	menu_camera.getX(), menu_camera.getY(), menu_camera.getZ(),
 				0.0, 0.0, 0.0,
-				menu_camera.getX(0.01f), menu_camera.getY(0.01f), menu_camera.getZ(0.01f));
+				menu_camera_north.getX(), menu_camera_north.getY(), menu_camera_north.getZ());
 
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glEnable(GL_TEXTURE_2D);
@@ -78,14 +79,14 @@ void SceneLayout::DrawMenu()
 	glDisable(GL_TEXTURE_2D);
 }
 
-void SceneLayout::DrawWorldMap(std::vector<std::vector<WorldTerrain>> world_map)
+void SceneLayout::DrawWorldMap(std::vector<std::vector<TerrainType>> world_map)
 {
 	for (int i = 0; i < world_map.size(); ++i)
 		for (int j = 0; j < world_map[i].size(); ++j)
 			DrawTerrain(world_map[i][j], i, j);
 }
 
-void SceneLayout::DrawTerrain(WorldTerrain terrain, int x_pos, int y_pos)
+void SceneLayout::DrawTerrain(TerrainType terrain, int x_pos, int y_pos)
 {
 	//switch (terrain)
 	//{

@@ -22,8 +22,8 @@ public:
 	void set_width_height(int width, int height);
 
 	void DrawMenu();
-	void DrawWorldMap(std::vector<std::vector<WorldTerrain>> world_map);
-	void DrawTerrain(WorldTerrain terrain, int x_pos, int y_pos);
+	void DrawWorldMap(std::vector<std::vector<TerrainType>> world_map);
+	void DrawTerrain(TerrainType terrain, int x_pos, int y_pos);
 	void DrawKingdom();
 	void RenderString(float position[], void* font, const unsigned char* string, float colors[]);
 	//void drawText(const char* text, int text_length, int x_pos, int y_pos);

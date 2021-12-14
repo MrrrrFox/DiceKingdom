@@ -10,12 +10,6 @@ GameManager::GameManager(sf::RenderWindow * _window, int _WIDTH, int _HEIGHT)
 	(*window).setFramerateLimit(60);
 	(*window).setVerticalSyncEnabled(true);
 
-	world_map = { {WorldTerrain::FOG_OF_WAR,	WorldTerrain::FOG_OF_WAR,	WorldTerrain::FOG_OF_WAR,		WorldTerrain::FOG_OF_WAR,	WorldTerrain::FOG_OF_WAR},
-				  {WorldTerrain::FOG_OF_WAR,	WorldTerrain::SEA,			WorldTerrain::SEA,				WorldTerrain::SEA,			WorldTerrain::FOG_OF_WAR},
-				  {WorldTerrain::FOG_OF_WAR,	WorldTerrain::SEA,			WorldTerrain::DICE_KINGDOM,		WorldTerrain::SEA,			WorldTerrain::FOG_OF_WAR},
-				  {WorldTerrain::FOG_OF_WAR,	WorldTerrain::SEA,			WorldTerrain::SEA,				WorldTerrain::SEA,			WorldTerrain::FOG_OF_WAR},
-				  {WorldTerrain::FOG_OF_WAR,	WorldTerrain::FOG_OF_WAR,	WorldTerrain::FOG_OF_WAR,		WorldTerrain::FOG_OF_WAR,	WorldTerrain::FOG_OF_WAR} };
-
 	imGuiLayout.initImGui(window, WIDTH, HEIGHT);
 	sceneLayout.initScene(WIDTH, HEIGHT);
 }
@@ -143,7 +137,7 @@ void GameManager::DrawImGui()
 		break;
 	case GameView::KINGDOM_LUMBER:
 		imGuiLayout.drawMaterialsBar(DK.get_materials());
-		imGuiLayout.drawPlacePanel(DK.get_place(Places::LUMBER));
+		imGuiLayout.drawPlacePanel(DK.get_place(KingdomPlace::LUMBER));
 		break;
 	}
 

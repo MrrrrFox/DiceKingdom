@@ -1,17 +1,17 @@
 #include "pch.h"
 #include "Spherical.h"
 
-float Spherical::getX(float add_phi, float add_theta)
+float Spherical::getX()
 { 
-	return distance * cos(phi+add_phi) * cos(theta+add_theta); 
+	return distance * cos(phi) * cos(theta); 
 }
 
-float Spherical::getY(float add_phi)
+float Spherical::getY()
 { 
-	return distance * sin(phi+add_phi);
+	return distance * sin(phi);
 }
 
-float Spherical::getZ(float add_phi, float add_theta)
+float Spherical::getZ()
 { 
-	return distance * cos(phi+add_phi) * sin(theta+add_theta); 
+	return distance * cos(phi) * sin(theta); 
 }

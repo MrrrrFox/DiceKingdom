@@ -6,13 +6,17 @@ enum class GameView
 	, MAP
 	, KINGDOM
 	, KINGDOM_LUMBER
-	, KINGDOM_RIG
 };
 
 
-enum class WorldTerrain
+enum class TerrainType
 {
 	DICE_KINGDOM
 	, SEA
 	, FOG_OF_WAR
+};
+
+enum class KingdomPlace
+{
+	LUMBER
 };

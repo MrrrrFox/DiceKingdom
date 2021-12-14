@@ -13,6 +13,35 @@ SceneLayout::SceneLayout()
 	menuTexture.generateMipmap();
 }
 
+void SceneLayout::initScene(int width, int height)
+{
+	set_width_height(width, height);
+
+	reshapeScreen(sf::Vector2u(WIDTH,HEIGHT));
+
+	// initialize OpenGL
+	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_NORMALIZE);
+	glEnable(GL_COLOR_MATERIAL);
+
+	GLfloat light_ambient_global[4] = { 0.5,0.5,0.5,1 };
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient_global);
+}
+
+void SceneLayout::reshapeScreen(sf::Vector2u size)
+{
+	glViewport(0, 0, (GLsizei)size.x, (GLsizei)size.y);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	if (perspective_projection) gluPerspective(45.0f, (GLdouble)size.x / (GLdouble)size.y, 0.1, 100.0);
+	else glOrtho(-((GLdouble)size.x / (GLdouble)size.y), ((GLdouble)size.x / (GLdouble)size.y), -1.0, 1.0, -3.0, 12.0);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+}
+
 bool SceneLayout::get_perspective_projection()
 {
 	return perspective_projection;
@@ -32,9 +61,10 @@ void SceneLayout::set_width_height(int width, int height)
 
 void SceneLayout::DrawMenu()
 {
+	Spherical menu_camera_north = Spherical(menu_camera.distance, menu_camera.theta, menu_camera.phi + 0.01f);
 	gluLookAt(	menu_camera.getX(), menu_camera.getY(), menu_camera.getZ(),
 				0.0, 0.0, 0.0,
-				menu_camera.getX(0.01f), menu_camera.getY(0.01f), menu_camera.getZ(0.01f));
+				menu_camera_north.getX(), menu_camera_north.getY(), menu_camera_north.getZ());
 
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glEnable(GL_TEXTURE_2D);
@@ -49,18 +79,14 @@ void SceneLayout::DrawMenu()
 	glDisable(GL_TEXTURE_2D);
 }
 
-void SceneLayout::DrawWorldMap(std::vector<std::vector<WorldTerrain>> world_map)
+void SceneLayout::DrawWorldMap(std::vector<std::vector<TerrainType>> world_map)
 {
-	//for (int i = 0; i < world_map.size(); ++i)
-	//{
-	//	for (int j = 0; j < world_map[i].size(); ++j)
-	//		DrawTerrain(world_map[i][j], i, j);
-	//	std::cout << std::endl;
-	//}
-	//std::cout << std::endl;
+	for (int i = 0; i < world_map.size(); ++i)
+		for (int j = 0; j < world_map[i].size(); ++j)
+			DrawTerrain(world_map[i][j], i, j);
 }
 
-void SceneLayout::DrawTerrain(WorldTerrain terrain, int x_pos, int y_pos)
+void SceneLayout::DrawTerrain(TerrainType terrain, int x_pos, int y_pos)
 {
 	//switch (terrain)
 	//{
@@ -78,19 +104,19 @@ void SceneLayout::DrawTerrain(WorldTerrain terrain, int x_pos, int y_pos)
 	//}
 }
 
-void SceneLayout::DrawKingdom(std::vector<Place *> places, GameView game_view)
+void SceneLayout::DrawKingdom()
 {
-	/*for(int i=0; i<places.size(); ++i)
-		std::cout << places[i]->get_name() << " ";
-	std::cout << std::endl;*/
-	if (game_view == GameView::KINGDOM_LUMBER)
-	{
-		//std::cout << "SHOWING LUMBER PANEL" << std::endl;
-	}
-	else if (game_view == GameView::KINGDOM_RIG)
-	{
-		//std::cout << "SHOWING RIG PANEL" << std::endl;
-	}
+	//for(int i=0; i<places.size(); ++i)
+	//	std::cout << places[i]->get_name() << " ";
+	//std::cout << std::endl;
+	//if (game_view == GameView::KINGDOM_LUMBER)
+	//{
+	//	std::cout << "SHOWING LUMBER PANEL" << std::endl;
+	//}
+	//else if (game_view == GameView::KINGDOM_RIG)
+	//{
+	//	std::cout << "SHOWING RIG PANEL" << std::endl;
+	//}
 }
 
 void SceneLayout::RenderString(float position[], void * font, const unsigned char * string, float colors[])

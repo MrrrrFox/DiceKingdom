@@ -1,32 +1,30 @@
 #include "pch.h"
 #include "DiceKingdom.h"
-#include "Lumber.h"
 
 DiceKingdom::DiceKingdom()
 {
-	Place * p1 = new Lumber;
-	places.push_back(p1);
-	Place * p2 = new Lumber;
-	places.push_back(p2);
+	int* _paint = &resources.paint.quantity;
+	lumber.set_paint(_paint);
+	rig.set_paint(_paint);
 
-	materials["wood"] = 10;
-	materials["paint"] = 20;
+	vector_of_places_with_limited_information = {
+		PlaceWithLimitedInformation(lumber.get_name()), 
+		PlaceWithLimitedInformation(rig.get_name())
+	};
+
+	map_of_buildings["Lumber"] = &lumber;
+	map_of_buildings["PaintRig"] = &rig;
 }
 
-std::vector<Place *> DiceKingdom::get_places()
+void DiceKingdom::add_materials(std::map<std::string, unsigned int> m)
 {
-	return places;
+	for(auto it = m.begin(); it != m.end(); it++)
+	{
+		resources.map_of_materials[it->first]->quantity += it->second;
+	}
 }
 
-void DiceKingdom::show_places()
+void DiceKingdom::add_dice(std::string place, Dice d, int n)
 {
-	for(int i=0; i<places.size(); ++i)
-		std::cout << places[i]->get_name() << " ";
-	std::cout << std::endl;
-}
-
-void DiceKingdom::clear()
-{
-	places.clear();
-	places.shrink_to_fit();
+	map_of_buildings[place]->add(d, n);
 }

@@ -141,7 +141,7 @@ void GameManager::DrawScene()
 	case GameView::KINGDOM:
 	case GameView::KINGDOM_LUMBER:
 	case GameView::KINGDOM_RIG:
-		sceneLayout.DrawKingdom(DK.get_places(), currentView);
+		//sceneLayout.DrawKingdom(DK.get_places(), currentView);
 		break;
 	default:
 		std::cerr << "unknown view to draw: " << (int)currentView << std::endl;
@@ -256,7 +256,7 @@ void GameManager::Proc()
 
 void GameManager::CloseGame()
 {
-	DK.clear();
+	//DK.clear();
 	ImGui::SFML::Shutdown();
 }
 

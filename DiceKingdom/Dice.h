@@ -10,6 +10,7 @@ struct DiceWithoutHP
 struct Dice
 {
 	Dice(unsigned int _faces, unsigned int _damage = 0) : dice(DiceWithoutHP(_faces)), damage(_damage) {}
+	Dice(DiceWithoutHP _dice, unsigned int _damage = 0) : dice(_dice), damage(_damage) {}
 
 	DiceWithoutHP dice;
 	unsigned int damage;   // 0 = no damage, 3 = max damage before dice is destroyed

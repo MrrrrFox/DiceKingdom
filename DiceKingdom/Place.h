@@ -11,17 +11,19 @@ class Place
 	   // (0,1) -> lower probability to do damage
 	   // 0 -> no damage
 	   // <0 -> undefined
-	int paint;   // nonnegative
+	int *paint;   // points to paint in DiceKingdom -> Resources -> Material paint
 
 	public:
 	Place(std::string _name, float _dmg_modifier = 1) : name(_name), damage_modifier(_dmg_modifier), paint(0) {}
+	void set_paint(int* _paint)
+	{
+		paint = _paint;
+	}
 	bool is_empty();
 	int count_dices();
-	// int count_dices(PARAMETERS);
-	void add(const Dice d, int n = 1);
-	void remove(const Dice d, int n = 1);
+	void add(const Dice d, unsigned int n = 1);
+	void remove(const Dice d, unsigned int n = 1);
 	int roll();
-	void change_paint(int n);
 	std::string get_name();
 	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> return_dice_array();
 

@@ -8,7 +8,7 @@ DiceKingdom::DiceKingdom()
 	rig.set_paint(_paint);
 
 	vector_of_places_with_limited_information = {
-		PlaceWithLimitedInformation(lumber.get_name()), 
+		PlaceWithLimitedInformation(lumber.get_name()),
 		PlaceWithLimitedInformation(rig.get_name())
 	};
 
@@ -24,7 +24,28 @@ void DiceKingdom::add_materials(std::map<std::string, unsigned int> m)
 	}
 }
 
-void DiceKingdom::add_dice(std::string place, Dice d, int n)
+void DiceKingdom::add_dice(std::string place, Dice d, unsigned int n)
 {
 	map_of_buildings[place]->add(d, n);
+}
+
+bool DiceKingdom::is_empty(std::string place)
+{
+	return map_of_buildings[place]->is_empty();
+}
+
+int DiceKingdom::count_dices(std::string place)
+{
+	return map_of_buildings[place]->count_dices();
+}
+
+std::map<DiceWithoutHP, int, DiceCompareWithoutHP> DiceKingdom::return_dice_array(std::string place)
+{
+	return map_of_buildings[place]->return_dice_array();
+}
+
+void DiceKingdom::create_resources()
+{
+	lumber.create_resources();
+	rig.create_resources();
 }

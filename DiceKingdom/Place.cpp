@@ -34,20 +34,20 @@ void Place::remove(const Dice d, unsigned int n)
 		throw std::runtime_error("Invalid value");
 	if(it->second == 0)
 		m.erase(it);
-	    // TODO: Stop displaying dices
+	// TODO: Stop displaying dices
 }
 
-int Place::roll()
+unsigned int Place::roll()
 {
-	int result = 0;
+	unsigned int result = 0;
 	std::map<Dice, int, DiceCompare> damaged;
 	std::map<Dice, int, DiceCompare> damaged_priority;
-	
+
 	for(auto it = m.begin(); it != m.end(); it++)
 	{
 		for(int i = 0; i < it->second; i++)
 		{
-			int pips;
+			unsigned int pips;
 			pips = 1 + std::rand() / ((RAND_MAX + 1u) / it->first.dice.faces);
 			result += pips;
 			if(pips == 1 && damage_modifier > 0)
@@ -63,7 +63,7 @@ int Place::roll()
 				if(damage_modifier > 4)
 					destroyed = 0;
 				else if(damage_modifier > 1)
-					destroyed = 4 - static_cast<int> (damage_modifier);
+					destroyed = 4 - static_cast<unsigned int> (damage_modifier);
 				if(it->first.damage < destroyed)
 					damaged[it->first] += 1;
 				else
@@ -73,7 +73,7 @@ int Place::roll()
 	}
 	// TODO: Display result or every single roll, depending on number of dices in Place
 
-    // Change the damage status of dices unless there is enough paint stored
+	// Change the damage status of dices unless there is enough paint stored
 	for(auto it = damaged_priority.begin(); it != damaged_priority.end(); it++)
 	{
 		for(int i = 0; i < it->second; i++)

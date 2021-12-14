@@ -5,5 +5,5 @@ class PaintRig : public Place
 {
 	public:
 	PaintRig() : Place("Paint Rig") {}
-	int create_resources();
+	unsigned int create_resources();
 };

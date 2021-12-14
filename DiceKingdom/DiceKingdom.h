@@ -52,12 +52,16 @@ class DiceKingdom
 	DiceKingdom();
 
 	void add_materials(std::map<std::string, unsigned int> m);
-	void add_dice(std::string place, Dice d, unsigned int n = 1);
 	bool is_empty(std::string place);
 	int count_dices(std::string place);
 	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> return_dice_array(std::string place);
 
 	void create_resources();
+
+	void add_dice(std::string place, const Dice d, unsigned int n = 1);
+	const Dice find_most_damaged_dice(DiceWithoutHP dice, std::string place);
+	const Dice find_least_damaged_dice(DiceWithoutHP dice,  std::string place);
+	void remove_dice(std::string place, const Dice d, unsigned int n = 1);
 
 	std::vector<Material*> get_resources()
 	{

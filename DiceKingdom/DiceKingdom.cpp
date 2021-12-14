@@ -24,7 +24,7 @@ void DiceKingdom::add_materials(std::map<std::string, unsigned int> m)
 	}
 }
 
-void DiceKingdom::add_dice(std::string place, Dice d, unsigned int n)
+void DiceKingdom::add_dice(std::string place, const Dice d, unsigned int n)
 {
 	map_of_buildings[place]->add(d, n);
 }
@@ -48,4 +48,39 @@ void DiceKingdom::create_resources()
 {
 	lumber.create_resources();
 	rig.create_resources();
+}
+
+const Dice DiceKingdom::find_most_damaged_dice(DiceWithoutHP dice,  std::string place)
+{
+	Dice d(dice, max_dmg);
+	std::map<Dice, int, DiceCompare> m = (*map_of_buildings[place]->get_map());
+	auto it = m.find(d);
+	while(it == m.end())
+	{
+		if(d.damage == 0)
+			throw std::runtime_error("Invalid value");
+		d.damage--;
+		it = m.find(d);
+	}
+	return d;
+}
+
+const Dice DiceKingdom::find_least_damaged_dice(DiceWithoutHP dice,  std::string place)
+{
+	Dice d(dice, 0);
+	std::map<Dice, int, DiceCompare> m = (*map_of_buildings[place]->get_map());
+	auto it = m.find(d);
+	while(it == m.end())
+	{
+		if(d.damage > max_dmg)
+			throw std::runtime_error("Invalid value");
+		d.damage++;
+		it = m.find(d);
+	}
+	return d;
+}
+
+void DiceKingdom::remove_dice(std::string place, const Dice d, unsigned int n)
+{
+	map_of_buildings[place]->remove(d, n);
 }

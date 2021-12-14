@@ -15,6 +15,10 @@ class Place
 
 	public:
 	Place(std::string _name, float _dmg_modifier = 1) : name(_name), damage_modifier(_dmg_modifier), paint(0) {}
+	std::map<Dice, int, DiceCompare>* get_map()
+	{
+		return &m;
+	}
 	void set_paint(int* _paint)
 	{
 		paint = _paint;

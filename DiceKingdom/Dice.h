@@ -10,15 +10,17 @@ struct DiceWithoutHP
 struct Dice
 {
 	Dice(unsigned int _faces, unsigned int _damage = 0) : dice(DiceWithoutHP(_faces)), damage(_damage) {}
+	Dice(DiceWithoutHP _dice, unsigned int _damage = 0) : dice(_dice), damage(_damage) {}
 
 	DiceWithoutHP dice;
 	unsigned int damage;   // 0 = no damage, 3 = max damage before dice is destroyed
 };
+
 struct DiceCompare
 {
 	bool operator()(const Dice& d1, const Dice& d2) const
 	{
-		if (d1.dice.faces != d2.dice.faces)
+		if(d1.dice.faces != d2.dice.faces)
 			return d1.dice.faces < d2.dice.faces;
 		else
 			return d1.damage < d2.damage;

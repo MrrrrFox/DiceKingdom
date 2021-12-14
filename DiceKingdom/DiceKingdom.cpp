@@ -1,42 +1,30 @@
 #include "pch.h"
 #include "DiceKingdom.h"
-#include "Lumber.h"
 
 DiceKingdom::DiceKingdom()
 {
-	materials["wood"] = 10;
-	materials["paint"] = 20;
+	int* _paint = &resources.paint.quantity;
+	lumber.set_paint(_paint);
+	rig.set_paint(_paint);
 
-	lumber.add(Dice(4), 12);
-	lumber.add(Dice(4,2), 3);
-	lumber.add(Dice(6), 5);
-	lumber.add(Dice(20), 1);
+	vector_of_places_with_limited_information = {
+		PlaceWithLimitedInformation(lumber.get_name()), 
+		PlaceWithLimitedInformation(rig.get_name())
+	};
+
+	map_of_buildings["Lumber"] = &lumber;
+	map_of_buildings["PaintRig"] = &rig;
 }
 
-Place& DiceKingdom::get_place(KingdomPlace place)
+void DiceKingdom::add_materials(std::map<std::string, unsigned int> m)
 {
-	switch (place)
+	for(auto it = m.begin(); it != m.end(); it++)
 	{
-	case KingdomPlace::LUMBER:
-		return lumber;
-	default:
-		std::cerr << "No such place serviced: " << (int)place << std::endl;
+		resources.map_of_materials[it->first]->quantity += it->second;
 	}
 }
 
-std::unordered_map<std::string, int> DiceKingdom::get_materials()
+void DiceKingdom::add_dice(std::string place, Dice d, int n)
 {
-	return materials;
-}
-
-std::map<DiceWithoutHP, int, DiceCompareWithoutHP> DiceKingdom::get_dices_from(KingdomPlace place)
-{
-	switch (place)
-	{
-	case KingdomPlace::LUMBER:
-		return lumber.return_dice_array();
-	default:
-		std::cerr << "No such place is serviced: " << (int)place << std::endl;
-	}
-	return std::map<DiceWithoutHP, int, DiceCompareWithoutHP>();
+	map_of_buildings[place]->add(d, n);
 }

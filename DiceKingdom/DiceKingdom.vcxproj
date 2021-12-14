@@ -167,6 +167,7 @@
     <ClCompile Include="ImGuiLayout.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="PaintRig.cpp" />
     <ClCompile Include="SceneLayout.cpp" />
     <ClCompile Include="imgui\imgui-SFML.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
@@ -189,6 +190,7 @@
     <ClInclude Include="DiceKingdom.h" />
     <ClInclude Include="enums.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="PaintRig.h" />
     <ClInclude Include="SceneLayout.h" />
     <ClInclude Include="ImGuiLayout.h" />
     <ClInclude Include="Lumber.h" />

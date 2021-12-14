@@ -69,6 +69,9 @@
     <ClCompile Include="ImGuiLayout.cpp">
       <Filter>Source Files\frontend</Filter>
     </ClCompile>
+    <ClCompile Include="PaintRig.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -103,6 +106,9 @@
     </ClInclude>
     <ClInclude Include="Spherical.h">
       <Filter>Header Files\frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="PaintRig.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

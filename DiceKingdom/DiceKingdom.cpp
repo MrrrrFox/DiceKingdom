@@ -4,29 +4,38 @@
 
 DiceKingdom::DiceKingdom()
 {
-	Place * p1 = new Lumber;
-	places.push_back(p1);
-	Place * p2 = new Lumber;
-	places.push_back(p2);
-
 	materials["wood"] = 10;
 	materials["paint"] = 20;
+
+	lumber.add(Dice(4), 12);
+	lumber.add(Dice(6), 5);
+	lumber.add(Dice(20), 1);
 }
 
-std::vector<Place *> DiceKingdom::get_places()
+Place& DiceKingdom::get_place(Places place)
 {
-	return places;
+	switch (place)
+	{
+	case Places::LUMBER:
+		return lumber;
+	default:
+		std::cerr << "No such place serviced: " << (int)place << std::endl;
+	}
 }
 
-void DiceKingdom::show_places()
+std::unordered_map<std::string, int> DiceKingdom::get_materials()
 {
-	for(int i=0; i<places.size(); ++i)
-		std::cout << places[i]->get_name() << " ";
-	std::cout << std::endl;
+	return materials;
 }
 
-void DiceKingdom::clear()
+std::map<DiceWithoutHP, int, DiceCompareWithoutHP> DiceKingdom::get_dices_from(Places place)
 {
-	places.clear();
-	places.shrink_to_fit();
+	switch (place)
+	{
+	case Places::LUMBER:
+		return lumber.return_dice_array();
+	default:
+		std::cerr << "No such place is serviced: " << (int)place << std::endl;
+	}
+	return std::map<DiceWithoutHP, int, DiceCompareWithoutHP>();
 }

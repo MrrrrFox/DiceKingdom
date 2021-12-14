@@ -13,6 +13,35 @@ SceneLayout::SceneLayout()
 	menuTexture.generateMipmap();
 }
 
+void SceneLayout::initScene(int width, int height)
+{
+	set_width_height(width, height);
+
+	reshapeScreen(sf::Vector2u(WIDTH,HEIGHT));
+
+	// initialize OpenGL
+	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_NORMALIZE);
+	glEnable(GL_COLOR_MATERIAL);
+
+	GLfloat light_ambient_global[4] = { 0.5,0.5,0.5,1 };
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient_global);
+}
+
+void SceneLayout::reshapeScreen(sf::Vector2u size)
+{
+	glViewport(0, 0, (GLsizei)size.x, (GLsizei)size.y);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	if (perspective_projection) gluPerspective(45.0f, (GLdouble)size.x / (GLdouble)size.y, 0.1, 100.0);
+	else glOrtho(-((GLdouble)size.x / (GLdouble)size.y), ((GLdouble)size.x / (GLdouble)size.y), -1.0, 1.0, -3.0, 12.0);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+}
+
 bool SceneLayout::get_perspective_projection()
 {
 	return perspective_projection;
@@ -51,13 +80,9 @@ void SceneLayout::DrawMenu()
 
 void SceneLayout::DrawWorldMap(std::vector<std::vector<WorldTerrain>> world_map)
 {
-	//for (int i = 0; i < world_map.size(); ++i)
-	//{
-	//	for (int j = 0; j < world_map[i].size(); ++j)
-	//		DrawTerrain(world_map[i][j], i, j);
-	//	std::cout << std::endl;
-	//}
-	//std::cout << std::endl;
+	for (int i = 0; i < world_map.size(); ++i)
+		for (int j = 0; j < world_map[i].size(); ++j)
+			DrawTerrain(world_map[i][j], i, j);
 }
 
 void SceneLayout::DrawTerrain(WorldTerrain terrain, int x_pos, int y_pos)
@@ -78,19 +103,19 @@ void SceneLayout::DrawTerrain(WorldTerrain terrain, int x_pos, int y_pos)
 	//}
 }
 
-void SceneLayout::DrawKingdom(std::vector<Place *> places, GameView game_view)
+void SceneLayout::DrawKingdom()
 {
-	/*for(int i=0; i<places.size(); ++i)
-		std::cout << places[i]->get_name() << " ";
-	std::cout << std::endl;*/
-	if (game_view == GameView::KINGDOM_LUMBER)
-	{
-		//std::cout << "SHOWING LUMBER PANEL" << std::endl;
-	}
-	else if (game_view == GameView::KINGDOM_RIG)
-	{
-		//std::cout << "SHOWING RIG PANEL" << std::endl;
-	}
+	//for(int i=0; i<places.size(); ++i)
+	//	std::cout << places[i]->get_name() << " ";
+	//std::cout << std::endl;
+	//if (game_view == GameView::KINGDOM_LUMBER)
+	//{
+	//	std::cout << "SHOWING LUMBER PANEL" << std::endl;
+	//}
+	//else if (game_view == GameView::KINGDOM_RIG)
+	//{
+	//	std::cout << "SHOWING RIG PANEL" << std::endl;
+	//}
 }
 
 void SceneLayout::RenderString(float position[], void * font, const unsigned char * string, float colors[])

@@ -1,9 +1,9 @@
 #pragma once
 #include "Place.h"
 
-class PaintRig : public Place
+class Idle : public Place
 {
 	public:
-	PaintRig() : Place("Paint Rig",0.1f) {}
+	Idle() : Place("Idle") {}
 	unsigned int create_resources();
 };

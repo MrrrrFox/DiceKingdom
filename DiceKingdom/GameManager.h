@@ -26,12 +26,12 @@ class GameManager
 		{Terrain(TerrainType::PLAIN, false),	Terrain(TerrainType::PLAIN, false),	Terrain(TerrainType::PLAIN, false)}
 	};
 
-	sf::RenderWindow * window;
+	sf::RenderWindow* window;
 	sf::Clock deltaClock;
 	sf::Time deltaTime, procCountUpTime = sf::seconds(0.0f), procTime = sf::seconds(1.0f);
 
-public:
-	GameManager(sf::RenderWindow * window, int WIDTH, int HEIGHT);
+	public:
+	GameManager(sf::RenderWindow* window, int WIDTH, int HEIGHT);
 	void Run();
 	void CloseGame();
 

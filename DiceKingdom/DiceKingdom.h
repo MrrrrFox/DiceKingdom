@@ -2,6 +2,7 @@
 #include "Place.h"
 #include "Lumber.h"
 #include "PaintRig.h"
+#include "Idle.h"
 
 struct Material
 {
@@ -15,7 +16,7 @@ struct Resources
 {
 	Resources() : wood("Wood"), paint("Paint"), some_super_advanced_material("Stone")
 	{
-		available_materials_vector = {wood, paint};
+		available_materials_vector = {&wood, &paint};
 		map_of_materials["Wood"] = &wood;
 		map_of_materials["Paint"] = &paint;
 		map_of_materials["Stone"] = &some_super_advanced_material;
@@ -25,7 +26,7 @@ struct Resources
 	Material paint;
 	Material some_super_advanced_material;
 
-	std::vector<Material> available_materials_vector;
+	std::vector<Material*> available_materials_vector;
 
 	std::map<std::string, Material*> map_of_materials;
 };
@@ -42,20 +43,29 @@ class DiceKingdom
 {
 	Lumber lumber;
 	PaintRig rig;
+	Idle idle;
 
 	Resources resources;
 	std::vector<PlaceWithLimitedInformation> vector_of_places_with_limited_information;
 
+	std::map<std::string, Place*> map_of_buildings;
 
 	public:
 	DiceKingdom();
 
-	std::map<std::string, Place*> map_of_buildings;//move to private after debugging
-
 	void add_materials(std::map<std::string, unsigned int> m);
-	void add_dice(std::string place, Dice d, int n = 1);
+	bool is_empty(std::string place);
+	int count_dices(std::string place);
+	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> return_dice_array(std::string place);
 
-	std::vector<Material> get_resources()
+	void create_resources();
+
+	void add_dice(std::string place, const Dice d, unsigned int n = 1);
+	const Dice find_most_damaged_dice(DiceWithoutHP dice, std::string place);
+	const Dice find_least_damaged_dice(DiceWithoutHP dice,  std::string place);
+	void remove_dice(std::string place, const Dice d, unsigned int n = 1);
+
+	std::vector<Material*> get_resources()
 	{
 		return resources.available_materials_vector;
 	}

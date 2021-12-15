@@ -72,6 +72,9 @@
     <ClCompile Include="PaintRig.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Idle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -108,6 +111,9 @@
       <Filter>Header Files\frontend</Filter>
     </ClInclude>
     <ClInclude Include="PaintRig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Idle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

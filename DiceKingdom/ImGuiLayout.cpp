@@ -2,11 +2,12 @@
 #include "ImGuiLayout.h"
 #include "colors.h"
 
-void ImGuiLayout::initImGui(sf::RenderWindow * _window, int width, int height)
+void ImGuiLayout::initImGui(sf::RenderWindow * _window, int width, int height, DiceKingdom* _DK)
 {
 	ImGui::SFML::Init(*_window);
 	WIDTH = width;
 	HEIGHT = height;
+	DK = _DK;
 
 	ImGuiStyle& style = ImGui::GetStyle();
 	style.WindowTitleAlign = ImVec2(0.5f, 0.5f);
@@ -35,7 +36,7 @@ void ImGuiLayout::drawMenuInfo()
 	ImGui::PopStyleVar();
 }
 
-void ImGuiLayout::drawMaterialsBar(std::vector<Material> materials)
+void ImGuiLayout::drawMaterialsBar(std::vector<Material *> materials)
 {
 	int size = (int)materials.size();
 
@@ -48,17 +49,17 @@ void ImGuiLayout::drawMaterialsBar(std::vector<Material> materials)
 
 	for (auto material : materials)
 	{
-		ImGui::Text((material.name + ": " + std::to_string(material.quantity)).data());
+		ImGui::Text((material->name + ": " + std::to_string(material->quantity)).data());
 		ImGui::NextColumn();
 	}
 
 	ImGui::End();
 }
 
-void ImGuiLayout::drawPlacePanel(Place & place)
+void ImGuiLayout::drawPlacePanel(std::string placeName)
 {
 	int btn_id = 0;
-	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> dices = place.return_dice_array();
+	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> dices = DK->return_dice_array(placeName);
 
 	ImVec2 cursor_pos;
 	
@@ -71,9 +72,9 @@ void ImGuiLayout::drawPlacePanel(Place & place)
 
 	ImGui::SetNextWindowPos(ImVec2(WIDTH / 4.0f, HEIGHT / 4.0f));
 	ImGui::SetNextWindowSize(ImVec2(WIDTH / 2.0f, HEIGHT / 2.0f));
-	ImGui::Begin(place.get_name().data(), NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
+	ImGui::Begin(placeName.data(), NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
 
-	if (ImGui::BeginTable(place.get_name().data(), 4, ImGuiTableFlags_BordersInnerH))
+	if (ImGui::BeginTable(placeName.data(), 4, ImGuiTableFlags_BordersInnerH))
 	{
 		ImGui::TableSetupColumn("dice type", ImGuiTableColumnFlags_WidthFixed, panels_widths[0]);
 		ImGui::TableSetupColumn("decreasing values", ImGuiTableColumnFlags_WidthFixed, panels_widths[1]);
@@ -98,7 +99,7 @@ void ImGuiLayout::drawPlacePanel(Place & place)
 			ImGui::PushID(btn_id++);
 			if (ImGui::Button("-"))
 			{
-				place.remove(Dice(dice_type->first.faces));
+				DK->remove_dice(placeName, Dice(dice_type->first));
 			}
 			ImGui::PopID();
 
@@ -111,7 +112,7 @@ void ImGuiLayout::drawPlacePanel(Place & place)
 			ImGui::PushID(btn_id++);
 			if (ImGui::Button("+"))
 			{
-				place.add(Dice(dice_type->first.faces));
+				DK->add_dice(placeName, Dice(dice_type->first));
 			}
 			ImGui::PopID();
 		}

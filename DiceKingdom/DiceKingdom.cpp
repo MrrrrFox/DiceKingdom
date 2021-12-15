@@ -25,7 +25,7 @@ DiceKingdom::DiceKingdom()
 
 	lumber.add(Dice(4),12);
 
-	rig.add(Dice(8),2)
+	rig.add(Dice(8), 2);
 }
 
 void DiceKingdom::add_materials(std::map<std::string, unsigned int> m)

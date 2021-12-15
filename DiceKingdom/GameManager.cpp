@@ -10,7 +10,7 @@ GameManager::GameManager(sf::RenderWindow* _window, int _WIDTH, int _HEIGHT)
 	(*window).setFramerateLimit(60);
 	(*window).setVerticalSyncEnabled(true);
 
-	imGuiLayout.initImGui(window, WIDTH, HEIGHT);
+	imGuiLayout.initImGui(window, WIDTH, HEIGHT, &DK);
 	sceneLayout.initScene(std::pair<int,int>(WIDTH, HEIGHT), get_DiceKingdom_position());
 	//sceneLayout.initScene(std::pair<int, int>(WIDTH, HEIGHT), std::pair<int,int>{0,0});
 }
@@ -158,7 +158,7 @@ void GameManager::DrawImGui()
 		break;
 	case GameView::KINGDOM_LUMBER:
 		imGuiLayout.drawMaterialsBar(DK.get_resources());
-		imGuiLayout.drawPlacePanel(*DK.map_of_buildings["Lumber"]);
+		imGuiLayout.drawPlacePanel("Lumber Camp");
 		break;
 	}
 
@@ -176,10 +176,10 @@ void GameManager::Proc()
 			std::cout << "MAP" << std::endl;
 			break;
 		case GameView::KINGDOM:
-			std::cout << "KINGDOM" << std::endl;
-			break;
+			//std::cout << "KINGDOM" << std::endl;
 		case GameView::KINGDOM_LUMBER:
-			std::cout << "LUMBER" << std::endl;
+			//std::cout << "LUMBER" << std::endl;
+			DK.create_resources();
 			break;
 		default:
 			std::cerr << "unknown view: " << (int) currentView << std::endl;

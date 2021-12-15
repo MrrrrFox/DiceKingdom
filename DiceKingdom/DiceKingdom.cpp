@@ -6,14 +6,17 @@ DiceKingdom::DiceKingdom()
 	int* _paint = &resources.paint.quantity;
 	lumber.set_paint(_paint);
 	rig.set_paint(_paint);
+	idle.set_paint(_paint);
 
 	vector_of_places_with_limited_information = {
 		PlaceWithLimitedInformation(lumber.get_name()),
-		PlaceWithLimitedInformation(rig.get_name())
+		PlaceWithLimitedInformation(rig.get_name()),
+		PlaceWithLimitedInformation(idle.get_name())
 	};
 
-	map_of_buildings["Lumber"] = &lumber;
-	map_of_buildings["PaintRig"] = &rig;
+	map_of_buildings["Lumber Camp"] = &lumber;
+	map_of_buildings["Paint Rig"] = &rig;
+	map_of_buildings["Idle"] = &idle;
 }
 
 void DiceKingdom::add_materials(std::map<std::string, unsigned int> m)
@@ -46,8 +49,10 @@ std::map<DiceWithoutHP, int, DiceCompareWithoutHP> DiceKingdom::return_dice_arra
 
 void DiceKingdom::create_resources()
 {
+	resources.paint.quantity += rig.create_resources(); // create paint before doing anything else
+	idle.create_resources(); // prioritize fixing dices in idle
+	// create other resources in some arbitrary order
 	resources.wood.quantity += lumber.create_resources();
-	resources.paint.quantity += rig.create_resources();
 }
 
 const Dice DiceKingdom::find_most_damaged_dice(DiceWithoutHP dice,  std::string place)

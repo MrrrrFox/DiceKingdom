@@ -23,6 +23,10 @@ class Place
 	{
 		paint = _paint;
 	}
+	int* get_paint()
+	{
+		return paint;
+	}
 	bool is_empty();
 	int count_dices();
 	void add(const Dice d, unsigned int n = 1);

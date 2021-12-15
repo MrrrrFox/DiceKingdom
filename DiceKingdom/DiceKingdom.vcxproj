@@ -164,6 +164,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DiceKingdom.cpp" />
+    <ClCompile Include="Idle.cpp" />
     <ClCompile Include="ImGuiLayout.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="GameManager.cpp" />
@@ -190,6 +191,7 @@
     <ClInclude Include="DiceKingdom.h" />
     <ClInclude Include="enums.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Idle.h" />
     <ClInclude Include="PaintRig.h" />
     <ClInclude Include="SceneLayout.h" />
     <ClInclude Include="ImGuiLayout.h" />

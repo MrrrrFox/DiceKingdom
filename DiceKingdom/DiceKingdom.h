@@ -2,6 +2,7 @@
 #include "Place.h"
 #include "Lumber.h"
 #include "PaintRig.h"
+#include "Idle.h"
 
 struct Material
 {
@@ -42,6 +43,7 @@ class DiceKingdom
 {
 	Lumber lumber;
 	PaintRig rig;
+	Idle idle;
 
 	Resources resources;
 	std::vector<PlaceWithLimitedInformation> vector_of_places_with_limited_information;

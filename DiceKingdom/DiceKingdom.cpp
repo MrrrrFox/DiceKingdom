@@ -46,8 +46,8 @@ std::map<DiceWithoutHP, int, DiceCompareWithoutHP> DiceKingdom::return_dice_arra
 
 void DiceKingdom::create_resources()
 {
-	lumber.create_resources();
-	rig.create_resources();
+	resources.wood.quantity += lumber.create_resources();
+	resources.paint.quantity += rig.create_resources();
 }
 
 const Dice DiceKingdom::find_most_damaged_dice(DiceWithoutHP dice,  std::string place)

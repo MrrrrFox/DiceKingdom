@@ -35,7 +35,7 @@ void ImGuiLayout::drawMenuInfo()
 	ImGui::PopStyleVar();
 }
 
-void ImGuiLayout::drawMaterialsBar(std::unordered_map<std::string, int> materials)
+void ImGuiLayout::drawMaterialsBar(std::vector<Material> materials)
 {
 	int size = (int)materials.size();
 
@@ -48,7 +48,7 @@ void ImGuiLayout::drawMaterialsBar(std::unordered_map<std::string, int> material
 
 	for (auto material : materials)
 	{
-		ImGui::Text((material.first + ": " + std::to_string(material.second)).data());
+		ImGui::Text((material.name + ": " + std::to_string(material.quantity)).data());
 		ImGui::NextColumn();
 	}
 

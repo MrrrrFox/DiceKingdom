@@ -14,6 +14,11 @@ DiceKingdom::DiceKingdom()
 
 	map_of_buildings["Lumber"] = &lumber;
 	map_of_buildings["PaintRig"] = &rig;
+
+	lumber.add(Dice(4),12);
+	lumber.add(Dice(4,2), 3);
+	lumber.add(Dice(6),5);
+	lumber.add(Dice(20));
 }
 
 void DiceKingdom::add_materials(std::map<std::string, unsigned int> m)

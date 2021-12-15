@@ -1,6 +1,7 @@
 #pragma once
 #include "Dice.h"
 #include "Place.h"
+#include "DiceKingdom.h"
 
 class ImGuiLayout
 {
@@ -16,6 +17,6 @@ public:
 	void terminateImGui();
 
 	void drawMenuInfo();
-	void drawMaterialsBar(std::unordered_map<std::string, int>);
+	void drawMaterialsBar(std::vector<Material> materials);
 	void drawPlacePanel(Place & place);
 };

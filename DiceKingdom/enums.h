@@ -13,7 +13,7 @@ enum class TerrainType
 {
 	DICE_KINGDOM
 	, SEA
-	, FOG_OF_WAR
+	, PLAIN
 };
 
 enum class KingdomPlace

@@ -46,7 +46,6 @@ class DiceKingdom
 	Resources resources;
 	std::vector<PlaceWithLimitedInformation> vector_of_places_with_limited_information;
 
-
 	public:
 	DiceKingdom();
 

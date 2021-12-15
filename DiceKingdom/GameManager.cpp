@@ -10,8 +10,9 @@ GameManager::GameManager(sf::RenderWindow* _window, int _WIDTH, int _HEIGHT)
 	(*window).setFramerateLimit(60);
 	(*window).setVerticalSyncEnabled(true);
 
-	imGuiLayout.initImGui(window, WIDTH, HEIGHT);
-	sceneLayout.initScene(WIDTH, HEIGHT);
+	imGuiLayout.initImGui(window, WIDTH, HEIGHT, &DK);
+	sceneLayout.initScene(std::pair<int,int>(WIDTH, HEIGHT), get_DiceKingdom_position());
+	//sceneLayout.initScene(std::pair<int, int>(WIDTH, HEIGHT), std::pair<int,int>{0,0});
 }
 
 void GameManager::Run()
@@ -32,6 +33,7 @@ void GameManager::Run()
 				if(event.key.code == sf::Keyboard::Enter)
 				{
 					sceneLayout.set_perspective_projection(!sceneLayout.get_perspective_projection());
+					sceneLayout.reshapeScreen((*window).getSize());
 				}
 				else if(event.key.code == sf::Keyboard::Space)
 				{
@@ -39,6 +41,8 @@ void GameManager::Run()
 					{
 						currentView = GameView::KINGDOM;
 						isPlaying = true;
+						sceneLayout.set_perspective_projection(!sceneLayout.get_perspective_projection());
+						sceneLayout.reshapeScreen((*window).getSize());
 					}
 					else if(currentView == GameView::MAP)
 					{
@@ -55,6 +59,8 @@ void GameManager::Run()
 					{
 						currentView = GameView::MENU;
 						isPlaying = false;
+						sceneLayout.set_perspective_projection(!sceneLayout.get_perspective_projection());
+						sceneLayout.reshapeScreen((*window).getSize());
 					}
 					else if(currentView == GameView::KINGDOM)
 					{
@@ -69,28 +75,45 @@ void GameManager::Run()
 				{
 					currentView = GameView::KINGDOM_LUMBER;
 				}
-				// handle arrows to decrease / increase dices in places
+				else if (event.key.code == sf::Keyboard::Right)
+				{
+					sceneLayout.map_camera.theta -= (float)fmod(3 * deltaTime.asSeconds(), M_PI);
+				}
+				else if (event.key.code == sf::Keyboard::Left)
+				{
+					sceneLayout.map_camera.theta += (float)fmod(3 * deltaTime.asSeconds(), M_PI);
+				}
 			}
-
+			else if (event.type == sf::Event::MouseWheelScrolled)
+			{
+				if (event.mouseWheelScroll.delta < 0 && sceneLayout.map_camera.distance < 10.0f)
+				{
+					sceneLayout.map_camera.distance += 10 * deltaTime.asSeconds();
+				}
+				else if (event.mouseWheelScroll.delta > 0 && sceneLayout.map_camera.distance > 1.5f)
+				{
+					sceneLayout.map_camera.distance -= 10 * deltaTime.asSeconds();
+				}
+			}
 		}
 
 		if(!isRunning)
 			break;
 
-		deltaTime += deltaClock.getElapsedTime();
+		deltaTime = deltaClock.getElapsedTime();
+		procCountUpTime += deltaTime;
 
 		DrawScene();
 		DrawImGui();
 
 		if(isPlaying)
 		{
-			if(deltaTime > procTime)
+			if (procCountUpTime > procTime)
 			{
 				Proc();
-				deltaTime = sf::seconds(0.0f);
+				procCountUpTime = sf::seconds(0.0f);
 			}
 		}
-
 		(*window).display();
 	}
 }
@@ -124,21 +147,19 @@ void GameManager::DrawImGui()
 
 	switch(currentView)
 	{
-		case GameView::MENU:
-			imGuiLayout.drawMenuInfo();
-			break;
-		case GameView::MAP:
-			//imGuiLayout.drawMaterialsBar(DK.get_materials());
-			// draw map
-			break;
-		case GameView::KINGDOM:
-			//imGuiLayout.drawMaterialsBar(DK.get_materials());
-			// draw kingdom
-			break;
-		case GameView::KINGDOM_LUMBER:
-			//imGuiLayout.drawMaterialsBar(DK.get_materials());
-			//imGuiLayout.drawPlacePanel(DK.get_place(KingdomPlace::LUMBER));
-			break;
+	case GameView::MENU:
+		imGuiLayout.drawMenuInfo();
+		break;
+	case GameView::MAP:
+		imGuiLayout.drawMaterialsBar(DK.get_resources());
+		break;
+	case GameView::KINGDOM:
+		imGuiLayout.drawMaterialsBar(DK.get_resources());
+		break;
+	case GameView::KINGDOM_LUMBER:
+		imGuiLayout.drawMaterialsBar(DK.get_resources());
+		imGuiLayout.drawPlacePanel("Lumber Camp");
+		break;
 	}
 
 	ImGui::SFML::Render(*window);
@@ -155,10 +176,10 @@ void GameManager::Proc()
 			std::cout << "MAP" << std::endl;
 			break;
 		case GameView::KINGDOM:
-			std::cout << "KINGDOM" << std::endl;
-			break;
+			//std::cout << "KINGDOM" << std::endl;
 		case GameView::KINGDOM_LUMBER:
-			std::cout << "LUMBER" << std::endl;
+			//std::cout << "LUMBER" << std::endl;
+			DK.create_resources();
 			break;
 		default:
 			std::cerr << "unknown view: " << (int) currentView << std::endl;
@@ -168,4 +189,18 @@ void GameManager::Proc()
 void GameManager::CloseGame()
 {
 	imGuiLayout.terminateImGui();
+}
+
+std::pair<int, int> GameManager::get_DiceKingdom_position()
+{
+	for (int i=0; i<world_map.size(); ++i)
+	{
+		for (int j=0; j<world_map[i].size(); ++j)
+		{
+			if (world_map[i][j].terrainType == TerrainType::DICE_KINGDOM)
+				return std::pair<int, int>(i, j);
+		}
+	}
+	std::cerr << "dice kingdom not found on map" << std::endl;
+	return std::pair<int, int>(-1, -1);
 }

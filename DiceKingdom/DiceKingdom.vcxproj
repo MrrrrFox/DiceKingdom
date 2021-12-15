@@ -199,6 +199,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Place.h" />
     <ClInclude Include="Spherical.h" />
+    <ClInclude Include="Terrain.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

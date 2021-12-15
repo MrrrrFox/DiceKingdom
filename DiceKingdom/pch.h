@@ -7,6 +7,8 @@
 #ifndef PCH_H
 #define PCH_H
 
+#define _USE_MATH_DEFINES
+
 #include <SFML\Window.hpp>
 #include <SFML\Graphics.hpp>
 #include <SFML\OpenGL.hpp>
@@ -15,6 +17,7 @@
 #include "imgui/imgui.h" 
 #include "imgui/imgui-SFML.h"
 #include <iostream>
+#include <cmath>
 #include <algorithm>
 #include <map>
 #include <unordered_map>

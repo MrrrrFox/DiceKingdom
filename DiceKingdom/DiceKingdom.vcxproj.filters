@@ -113,6 +113,9 @@
     <ClInclude Include="PaintRig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>Header Files</Filter>
+	</ClInclude>
     <ClInclude Include="Idle.h">
       <Filter>Header Files</Filter>
     </ClInclude>

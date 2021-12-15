@@ -1,6 +1,6 @@
 #pragma once
 #include "Dice.h"
-#include "Place.h"
+#include "DiceKingdom.h"
 
 class ImGuiLayout
 {
@@ -11,11 +11,13 @@ class ImGuiLayout
 	float panels_widths[4] = { 30.0f, 80.0f, 50.0f, 80.0f };
 	float panels_padding_y = 3.5f;
 
+	DiceKingdom* DK = nullptr;
+
 public:
-	void initImGui(sf::RenderWindow * window, int width, int height);
+	void initImGui(sf::RenderWindow * window, int width, int height, DiceKingdom * _DK);
 	void terminateImGui();
 
 	void drawMenuInfo();
-	void drawMaterialsBar(std::unordered_map<std::string, int>);
-	void drawPlacePanel(Place & place);
+	void drawMaterialsBar(std::vector<Material *> materials);
+	void drawPlacePanel(std::string placeName);
 };

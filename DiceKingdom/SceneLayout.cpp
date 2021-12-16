@@ -18,10 +18,9 @@ SceneLayout::SceneLayout()
 	set_hex_size(0.5f);
 }
 
-void SceneLayout::initScene(std::pair<int, int> window_sizes, std::pair<int, int> DK_pos)
+void SceneLayout::initScene(std::pair<int, int> window_sizes)
 {
 	set_width_height(window_sizes.first, window_sizes.second);
-	set_map_origin(DK_pos.first, DK_pos.second);
 
 	reshapeScreen(sf::Vector2u(WIDTH,HEIGHT));
 
@@ -97,7 +96,7 @@ void SceneLayout::DrawMenu()
 	glDisable(GL_TEXTURE_2D);
 }
 
-void SceneLayout::DrawWorldMap(std::vector<std::vector<Terrain>> world_map)
+void SceneLayout::DrawWorldMap(std::vector<Terrain> world_map)
 {
 	Spherical map_camera_north = Spherical(map_camera.distance, map_camera.theta, map_camera.phi + 0.01f);
 	gluLookAt(map_camera.getX(), map_camera.getY(), map_camera.getZ(),
@@ -105,88 +104,92 @@ void SceneLayout::DrawWorldMap(std::vector<std::vector<Terrain>> world_map)
 		map_camera_north.getX(), map_camera_north.getY(), map_camera_north.getZ());
 
 	float x_posf, z_posf;
-	int max_x, max_z, tmp;
+	std::pair<int, int> min_max_x = { 0,0 }, min_max_z = { 0,0 };
 
-	max_x = (int)world_map.size();
-	max_z = (int)world_map[0].size();
-	for(auto row: world_map)
+	for(auto terrain: world_map)
 	{
-		tmp = (int)row.size();
-		if (tmp > max_z)
-			max_z = tmp;
+		if (terrain.position.first > min_max_x.second)
+			min_max_x.second = terrain.position.first;
+		else if (terrain.position.first < min_max_x.first)
+			min_max_x.first = terrain.position.first;
+
+		if (terrain.position.second > min_max_z.second)
+			min_max_z.second = terrain.position.second;
+		else if (terrain.position.second < min_max_z.first)
+			min_max_z.first = terrain.position.second;
 	}
 
-	glPushMatrix();
-	glTranslatef(map_origin.first, 0.0f, map_origin.second);
-
-	for (int i = 0; i < world_map.size(); ++i)
+	for (auto terrain: world_map)
 	{
-		for (int k = 0; k < world_map[i].size(); ++k)
-		{
-			x_posf = (i % 2 ? hex_size.first : hex_size.first / 2.0f) + k * hex_size.first;
-			z_posf = i * 3.0f / 4.0f * hex_size.second;
-			if (world_map[i][k].visible)
-				DrawTerrain(world_map[i][k].terrainType, x_posf, z_posf);
-			else
-				DrawUknown(x_posf, z_posf, max_x, max_z);
-		}
+		//x_posf = (i % 2 ? hex_size.first : hex_size.first / 2.0f) + k * hex_size.first;
+		//z_posf = i * 3.0f / 4.0f * hex_size.second;
+		if (terrain.visible)
+			DrawTerrain(terrain);
+		else
+			DrawUknown(terrain.position.first, terrain.position.second, min_max_x, min_max_z);
 	}
-			
-	glPopMatrix();
 }
 
-void SceneLayout::DrawTerrain(TerrainType terrain, float x_posf, float z_posf)
+void SceneLayout::DrawTerrain(Terrain terrain)
 {
-	switch (terrain)
+	switch (terrain.terrainType)
 	{
 	case TerrainType::DICE_KINGDOM:
-		DrawColorHex(new GLfloat[3] { 0.5f, 0.5f, 0.5f}, x_posf, z_posf);
-		DrawCastle(x_posf, z_posf);
+		DrawColorHex(new GLfloat[3] { 0.5f, 0.5f, 0.5f}, terrain.position.first, terrain.position.second);
+		DrawCastle(terrain.position.first, terrain.position.second);
 		break;
 	case TerrainType::SEA:
-		DrawColorHex(new GLfloat[3]{ 0.4f, 0.76f, 0.79f }, x_posf, z_posf);
+		DrawColorHex(new GLfloat[3]{ 0.4f, 0.76f, 0.79f }, terrain.position.first, terrain.position.second);
 		break;
 	case TerrainType::PLAIN:
-		DrawColorHex(new GLfloat[3]{ 0.49f, 0.78f, 0.31f }, x_posf, z_posf);
+		DrawColorHex(new GLfloat[3]{ 0.49f, 0.78f, 0.31f }, terrain.position.first, terrain.position.second);
 		break;
 	default:
-		DrawColorHex(new GLfloat[3]{ 0.0f, 0.0f, 0.0f }, x_posf, z_posf);
-		std::cerr << "unknown terrain: " << (int)terrain << std::endl;
+		DrawColorHex(new GLfloat[3]{ 0.0f, 0.0f, 0.0f }, terrain.position.first, terrain.position.second);
+		std::cerr << "unknown terrain: " << (int)terrain.terrainType << std::endl;
 	}
 }
 
-void SceneLayout::DrawUknown(float x_posf, float z_posf, int x_map_size, int z_map_size)
+void SceneLayout::DrawUknown(int row, int column, std::pair<int, int> min_max_x, std::pair<int, int> min_max_z)
 {
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glEnable(GL_TEXTURE_2D);
 	sf::Texture::bind(&unknownTerrainTexture);
 
-	float dx = x_posf / x_map_size, dz = z_posf / z_map_size;
+	int size_x = (min_max_x.second == min_max_x.first ? 1 : min_max_x.second - min_max_x.first),
+		size_z = (min_max_z.second == min_max_z.first ? 1 : min_max_z.second - min_max_z.first);
+	float tex_hex_h = hex_size.second / (hex_size.second * size_x), tex_hex_w = hex_size.first / (hex_size.first * size_z);
 
-	float tex_hex_h = hex_size.second / (hex_size.second * x_map_size), tex_hex_w = hex_size.first / (hex_size.first * z_map_size);
+	// it may not work for little maps,
+	float	dx = ((float)(row - min_max_x.first) / size_x) * (1.0f - 2 * tex_hex_w) + tex_hex_w,
+			dz = ((float)(column - min_max_z.first) / size_z) * (1.0f - 2 * tex_hex_h) + tex_hex_h;
 
+	glPushMatrix();
+	glTranslatef((row % 2 == 0 ? 0.0f : hex_size.first / 2.0f) + column * hex_size.first, 0.0, row * 3.0f / 4.0f * hex_size.second);
 	glBegin(GL_POLYGON);
-	glTexCoord2f(dx, dz);										glVertex3f(x_posf, 0.0f, z_posf);
-	glTexCoord2f(dx - tex_hex_w / 2, dz + tex_hex_h / 4);		glVertex3f(x_posf - hex_size.first / 2, 0.0f, z_posf + hex_size.second / 4);
-	glTexCoord2f(dx - tex_hex_w / 2, dz + 3 * tex_hex_h / 4);	glVertex3f(x_posf - hex_size.first / 2, 0.0f, z_posf + 3 * hex_size.second / 4);
-	glTexCoord2f(dx, dz + tex_hex_h);							glVertex3f(x_posf, 0.0f, z_posf + hex_size.second);
-	glTexCoord2f(dx + tex_hex_w / 2, dz + 3 * tex_hex_h / 4);	glVertex3f(x_posf + hex_size.first / 2, 0.0f, z_posf + 3 * hex_size.second / 4);
-	glTexCoord2f(dx + tex_hex_w / 2, dz + tex_hex_h / 4);		glVertex3f(x_posf + hex_size.first / 2, 0.0f, z_posf + hex_size.second / 4);
+	glTexCoord2f(dx,				dz-tex_hex_h/2);		glVertex3f(0.0f,				0.0f, -hex_size.second / 2);
+	glTexCoord2f(dx - tex_hex_w/2,	dz - tex_hex_h / 4);	glVertex3f(-hex_size.first / 2, 0.0f, -hex_size.second / 4);
+	glTexCoord2f(dx - tex_hex_w/2,	dz + tex_hex_h / 4);	glVertex3f(-hex_size.first / 2, 0.0f, hex_size.second / 4);
+	glTexCoord2f(dx,				dz+ tex_hex_h / 2);		glVertex3f(0.0f,				0.0f, hex_size.second / 2);
+	glTexCoord2f(dx + tex_hex_w/2,	dz + tex_hex_h / 4);	glVertex3f(hex_size.first / 2,	0.0f, hex_size.second / 4);
+	glTexCoord2f(dx + tex_hex_w/2,	dz - tex_hex_h / 4);	glVertex3f(hex_size.first / 2,	0.0f, -hex_size.second / 4);
 	glEnd();
-	glDisable(GL_TEXTURE_2D);
+	glPopMatrix();
 }
 
-void SceneLayout::DrawColorHex(GLfloat * color, float x_posf, float z_posf)
+void SceneLayout::DrawColorHex(GLfloat * color, int row, int column)
 {
+	glPushMatrix();
+	glTranslatef((row % 2 == 0 ? 0.0f : hex_size.first / 2.0f) + column * hex_size.first, 0.0, row * 3.0f / 4.0f * hex_size.second);
 	glBegin(GL_POLYGON);
-	glColor3fv(color); glVertex3f(x_posf, 0.0f, z_posf);
-	glColor3fv(color); glVertex3f(x_posf, 0.0f, z_posf);
-	glColor3fv(color);  glVertex3f(x_posf - hex_size.first / 2, 0.0f, z_posf + hex_size.second / 4);
-	glColor3fv(color);  glVertex3f(x_posf - hex_size.first / 2, 0.0f, z_posf + 3 * hex_size.second / 4);
-	glColor3fv(color);  glVertex3f(x_posf, 0.0f, z_posf + hex_size.second);
-	glColor3fv(color);  glVertex3f(x_posf + hex_size.first / 2, 0.0f, z_posf + 3 * hex_size.second / 4);
-	glColor3fv(color);  glVertex3f(x_posf + hex_size.first / 2, 0.0f, z_posf + hex_size.second / 4);
+	glColor3fv(color);	glVertex3f(0.0f,					0.0f, - hex_size.second / 2);
+	glColor3fv(color);  glVertex3f(- hex_size.first / 2,	0.0f, - hex_size.second / 4);
+	glColor3fv(color);  glVertex3f(- hex_size.first / 2,	0.0f, hex_size.second / 4);
+	glColor3fv(color);  glVertex3f(0.0f,					0.0f, hex_size.second / 2);
+	glColor3fv(color);  glVertex3f(hex_size.first / 2,		0.0f, hex_size.second / 4);
+	glColor3fv(color);  glVertex3f(hex_size.first / 2,		0.0f, - hex_size.second / 4);
 	glEnd();
+	glPopMatrix();
 	delete[] color;
 }
 
@@ -204,19 +207,9 @@ void SceneLayout::DrawKingdom()
 	glColor3f(0.0, 1.0, 0.0); glVertex3f(0, 0, 0); glVertex3f(0, 1.0, 0);
 	glColor3f(0.0, 0.0, 1.0); glVertex3f(0, 0, 0); glVertex3f(0, 0, 1.0);
 	glEnd();
-
-	//Linie przerywane
-	glEnable(GL_LINE_STIPPLE);
-	glLineStipple(2, 0xAAAA);
-	glBegin(GL_LINES);
-	glColor3f(1.0, 0.0, 0.0); glVertex3f(0, 0, 0); glVertex3f(-1.0, 0, 0);
-	glColor3f(0.0, 1.0, 0.0); glVertex3f(0, 0, 0); glVertex3f(0, -1.0, 0);
-	glColor3f(0.0, 0.0, 1.0); glVertex3f(0, 0, 0); glVertex3f(0, 0, -1.0);
-	glEnd();
-	glDisable(GL_LINE_STIPPLE);
 }
 
-void SceneLayout::DrawCastle(float x_posf, float z_posf)
+void SceneLayout::DrawCastle(int row, int column)
 {
 	GLUquadricObj* qobj = gluNewQuadric();
 	gluQuadricDrawStyle(qobj, GLU_FILL);
@@ -234,7 +227,7 @@ void SceneLayout::DrawCastle(float x_posf, float z_posf)
 									{-mini_tower_offset, 0.0} };
 
 	glPushMatrix();
-	glTranslatef(x_posf, 0.0, z_posf + hex_size.second / 2);
+	glTranslatef((row % 2 == 0 ? 0.0f : hex_size.first / 2.0f) + column * hex_size.first, 0.0, row * 3.0f / 4.0f * hex_size.second);
 
 	// main-tower
 	glPushMatrix();
@@ -275,9 +268,6 @@ void SceneLayout::DrawCastle(float x_posf, float z_posf)
 		glPopMatrix();
 	}
 
-
-
-	
 	glPopMatrix();
 }
 

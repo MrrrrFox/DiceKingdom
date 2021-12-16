@@ -23,7 +23,7 @@ class SceneLayout
 public:
 	Spherical map_camera = Spherical(3.0f, 1.2f, 0.7f); // TO DO: move to private
 	SceneLayout();
-	void initScene(std::pair<int,int> window_sizes, std::pair<int,int> DK_pos);
+	void initScene(std::pair<int,int> window_sizes);
 	void reshapeScreen(sf::Vector2u size);
 
 	bool get_perspective_projection();
@@ -33,12 +33,12 @@ public:
 	void set_hex_size(float _size);
 
 	void DrawMenu();
-	void DrawWorldMap(std::vector<std::vector<Terrain>> world_map);
-	void DrawTerrain(TerrainType terrain, float x_posf, float z_posf);
-	void DrawUknown(float x_posf, float z_posf, int x_map_size, int z_map_size);
-	void DrawColorHex(GLfloat * color, float x_posf, float z_posf);
+	void DrawWorldMap(std::vector<Terrain> world_map);
+	void DrawTerrain(Terrain terrain);
+	void DrawUknown(int row, int column, std::pair<int,int> min_max_x, std::pair<int, int> min_max_z);
+	void DrawColorHex(GLfloat * color, int row, int column);
 	void DrawKingdom();
-	void DrawCastle(float x_posf, float z_posf);
+	void DrawCastle(int row, int column);
 	void RenderString(float position[], void* font, const unsigned char* string, float colors[]);
 	//void drawText(const char* text, int text_length, int x_pos, int y_pos);
 };

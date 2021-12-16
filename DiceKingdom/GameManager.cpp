@@ -11,7 +11,7 @@ GameManager::GameManager(sf::RenderWindow* _window, int _WIDTH, int _HEIGHT)
 	(*window).setVerticalSyncEnabled(true);
 
 	imGuiLayout.initImGui(window, WIDTH, HEIGHT, &DK);
-	sceneLayout.initScene(std::pair<int,int>(WIDTH, HEIGHT), get_DiceKingdom_position());
+	sceneLayout.initScene(std::pair<int,int>(WIDTH, HEIGHT));
 	//sceneLayout.initScene(std::pair<int, int>(WIDTH, HEIGHT), std::pair<int,int>{0,0});
 }
 
@@ -90,7 +90,7 @@ void GameManager::Run()
 				{
 					sceneLayout.map_camera.distance += 10 * deltaTime.asSeconds();
 				}
-				else if (event.mouseWheelScroll.delta > 0 && sceneLayout.map_camera.distance > 1.5f)
+				else if (event.mouseWheelScroll.delta > 0 && sceneLayout.map_camera.distance > 2.0f)
 				{
 					sceneLayout.map_camera.distance -= 10 * deltaTime.asSeconds();
 				}
@@ -189,18 +189,4 @@ void GameManager::Proc()
 void GameManager::CloseGame()
 {
 	imGuiLayout.terminateImGui();
-}
-
-std::pair<int, int> GameManager::get_DiceKingdom_position()
-{
-	for (int i=0; i<world_map.size(); ++i)
-	{
-		for (int j=0; j<world_map[i].size(); ++j)
-		{
-			if (world_map[i][j].terrainType == TerrainType::DICE_KINGDOM)
-				return std::pair<int, int>(i, j);
-		}
-	}
-	std::cerr << "dice kingdom not found on map" << std::endl;
-	return std::pair<int, int>(-1, -1);
 }

@@ -16,15 +16,16 @@ class GameManager
 	ImGuiLayout imGuiLayout;
 	DiceKingdom DK;
 
-	std::vector<std::vector<Terrain>> world_map = {
-		{Terrain(TerrainType::PLAIN, false),	Terrain(TerrainType::PLAIN, false),	Terrain(TerrainType::PLAIN, false),			Terrain(TerrainType::PLAIN, false),	Terrain(TerrainType::PLAIN, false), Terrain(TerrainType::PLAIN, false), Terrain(TerrainType::PLAIN, false)},
-		{Terrain(TerrainType::PLAIN, false),	Terrain(TerrainType::SEA, true),	Terrain(TerrainType::SEA, true),			Terrain(TerrainType::PLAIN, false),	Terrain(TerrainType::PLAIN, false), Terrain(TerrainType::PLAIN, false)},
-		{Terrain(TerrainType::PLAIN, false),	Terrain(TerrainType::SEA, true),	Terrain(TerrainType::DICE_KINGDOM, true),	Terrain(TerrainType::SEA, true),	Terrain(TerrainType::PLAIN, false)},
-		{Terrain(TerrainType::PLAIN, false),	Terrain(TerrainType::SEA, true),	Terrain(TerrainType::SEA, true),			Terrain(TerrainType::PLAIN, false),	Terrain(TerrainType::PLAIN, false), Terrain(TerrainType::PLAIN, false)},
-		{Terrain(TerrainType::PLAIN, false),	Terrain(TerrainType::PLAIN, false),	Terrain(TerrainType::PLAIN, false),			Terrain(TerrainType::PLAIN, false),	Terrain(TerrainType::PLAIN, false)},
-		{Terrain(TerrainType::PLAIN, false),	Terrain(TerrainType::PLAIN, false),	Terrain(TerrainType::PLAIN, false)},
-		{Terrain(TerrainType::PLAIN, false),	Terrain(TerrainType::PLAIN, false),	Terrain(TerrainType::PLAIN, false)}
-	};
+	std::vector<Terrain> world_map = { Terrain(TerrainType::DICE_KINGDOM, true, {0, 0}),
+		Terrain(TerrainType::SEA, true, {0, 1}), Terrain(TerrainType::SEA, true, {0, -1}), 
+		Terrain(TerrainType::SEA, true, {1, 0}), Terrain(TerrainType::SEA, true, {1, -1}), 
+		Terrain(TerrainType::SEA, true, {-1, 0}), Terrain(TerrainType::SEA, true, {-1, -1}),
+		Terrain(TerrainType::PLAIN, false, {0, 2}), Terrain(TerrainType::PLAIN, false, {0, 3}), Terrain(TerrainType::PLAIN, false, {0, -2}),
+		Terrain(TerrainType::PLAIN, false, {-1, -2}), Terrain(TerrainType::PLAIN, false, {-1, -3}), Terrain(TerrainType::PLAIN, false, {-1, 1}),
+		Terrain(TerrainType::PLAIN, false, {1, -2}), Terrain(TerrainType::PLAIN, false, {1, -3}), Terrain(TerrainType::PLAIN, false, {1, 1}),
+		Terrain(TerrainType::PLAIN, false, {2, 0}), Terrain(TerrainType::PLAIN, false, {2, -2}), Terrain(TerrainType::PLAIN, false, {-2, 1}),
+		Terrain(TerrainType::PLAIN, false, {-2, 2}), Terrain(TerrainType::PLAIN, false, {-2, -2}), Terrain(TerrainType::PLAIN, false, {-3, -3}),
+};
 
 	sf::RenderWindow* window;
 	sf::Clock deltaClock;
@@ -38,5 +39,4 @@ class GameManager
 	void DrawScene();
 	void DrawImGui();
 	void Proc();
-	std::pair<int,int> get_DiceKingdom_position();
 };

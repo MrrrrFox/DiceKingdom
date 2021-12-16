@@ -57,6 +57,7 @@ class DiceKingdom
 	bool is_empty(std::string place);
 	int count_dices(std::string place);
 	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> return_dice_array(std::string place);
+	std::set<DiceWithoutHP, DiceCompareWithoutHP> return_dice_array_combined_with_idle(std::string place);
 
 	void create_resources();
 

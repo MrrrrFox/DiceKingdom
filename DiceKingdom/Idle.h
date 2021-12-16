@@ -4,6 +4,6 @@
 class Idle : public Place
 {
 	public:
-	Idle() : Place("Idle") {}
+	Idle() : Place("Idle", 0) {}
 	unsigned int create_resources();
 };

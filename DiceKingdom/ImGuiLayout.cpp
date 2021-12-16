@@ -2,7 +2,7 @@
 #include "ImGuiLayout.h"
 #include "colors.h"
 
-void ImGuiLayout::initImGui(sf::RenderWindow * _window, int width, int height, DiceKingdom* _DK)
+void ImGuiLayout::initImGui(sf::RenderWindow* _window, int width, int height, DiceKingdom* _DK)
 {
 	ImGui::SFML::Init(*_window);
 	WIDTH = width;
@@ -13,6 +13,16 @@ void ImGuiLayout::initImGui(sf::RenderWindow * _window, int width, int height, D
 	style.WindowTitleAlign = ImVec2(0.5f, 0.5f);
 	style.Colors[ImGuiCol_TitleBg] = gray;
 	style.Colors[ImGuiCol_TitleBgActive] = gray;
+
+
+	DK->add_dice("Idle", Dice(4), 12);
+	DK->add_dice("Idle", Dice(4, 2), 3);
+	DK->add_dice("Idle", Dice(6), 5);
+	DK->add_dice("Idle", Dice(20));
+
+	DK->add_dice("Lumber Camp", Dice(4), 12);
+
+	DK->add_dice("Paint Rig", Dice(8), 2);
 }
 
 void ImGuiLayout::terminateImGui()
@@ -36,18 +46,18 @@ void ImGuiLayout::drawMenuInfo()
 	ImGui::PopStyleVar();
 }
 
-void ImGuiLayout::drawMaterialsBar(std::vector<Material *> materials)
+void ImGuiLayout::drawMaterialsBar(std::vector<Material*> materials)
 {
-	int size = (int)materials.size();
+	int size = (int) materials.size();
 
 	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
 	ImGui::Begin("Materials' bar", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
-	
+
 	ImGui::Columns(size, "Materials' bar", false);
-	for (int i = 0; i < size; ++i)
+	for(int i = 0; i < size; ++i)
 		ImGui::SetColumnWidth(i, 100.0f);
 
-	for (auto material : materials)
+	for(auto material : materials)
 	{
 		ImGui::Text((material->name + ": " + std::to_string(material->quantity)).data());
 		ImGui::NextColumn();
@@ -62,7 +72,7 @@ void ImGuiLayout::drawPlacePanel(std::string placeName)
 	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> dices = DK->return_dice_array(placeName);
 
 	ImVec2 cursor_pos;
-	
+
 	std::string dice_type_name;
 	int dice_type_quantity;
 
@@ -74,14 +84,14 @@ void ImGuiLayout::drawPlacePanel(std::string placeName)
 	ImGui::SetNextWindowSize(ImVec2(WIDTH / 2.0f, HEIGHT / 2.0f));
 	ImGui::Begin(placeName.data(), NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoMove);
 
-	if (ImGui::BeginTable(placeName.data(), 4, ImGuiTableFlags_BordersInnerH))
+	if(ImGui::BeginTable(placeName.data(), 4, ImGuiTableFlags_BordersInnerH))
 	{
 		ImGui::TableSetupColumn("dice type", ImGuiTableColumnFlags_WidthFixed, panels_widths[0]);
 		ImGui::TableSetupColumn("decreasing values", ImGuiTableColumnFlags_WidthFixed, panels_widths[1]);
 		ImGui::TableSetupColumn("quantity", ImGuiTableColumnFlags_WidthFixed, panels_widths[2]);
 		ImGui::TableSetupColumn("increasing values", ImGuiTableColumnFlags_WidthFixed, panels_widths[3]);
 
-		for (auto dice_type = dices.begin(); dice_type != dices.end(); ++dice_type)
+		for(auto dice_type = dices.begin(); dice_type != dices.end(); ++dice_type)
 		{
 			dice_type_name = "D" + std::to_string(dice_type->first.faces);
 			dice_type_quantity = dice_type->second;
@@ -97,7 +107,7 @@ void ImGuiLayout::drawPlacePanel(std::string placeName)
 			cursor_pos = ImGui::GetCursorPos();
 			ImGui::SetCursorPos(ImVec2(cursor_pos.x + panels_widths[1] - 15.0f, cursor_pos.y));
 			ImGui::PushID(btn_id++);
-			if (ImGui::Button("-"))
+			if(ImGui::Button("-"))
 			{
 				DK->remove_dice(placeName, Dice(dice_type->first));
 			}
@@ -110,7 +120,7 @@ void ImGuiLayout::drawPlacePanel(std::string placeName)
 
 			ImGui::TableSetColumnIndex(3);
 			ImGui::PushID(btn_id++);
-			if (ImGui::Button("+"))
+			if(ImGui::Button("+"))
 			{
 				DK->add_dice(placeName, Dice(dice_type->first));
 			}

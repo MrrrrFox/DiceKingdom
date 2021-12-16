@@ -29,7 +29,13 @@ int main()
             dk.add_dice("Lumber Camp", Dice(6), 400);
             dk.add_dice("Lumber Camp", Dice(8), 2);
             dk.add_dice("Paint Rig", Dice(4));
-            auto m = dk.return_dice_array("Lumber Camp");
+            dk.add_dice("Idle", Dice(10));
+            auto m = dk.return_dice_array_combined_with_idle("Lumber Camp");
+            for(auto it = m.begin(); it != m.end(); it++)
+            {
+                std::cout << it->faces << '\n';
+            }
+            /*auto m = dk.return_dice_array("Lumber Camp");
             for (auto it = m.begin(); it != m.end(); it++)
             {
                 std::cout << it->first.faces << "    " << it->second << '\n';
@@ -41,7 +47,7 @@ int main()
                 dk.create_resources();
                 std::cout << dk.get_resources()[0]->quantity << '\t' << dk.get_resources()[1]->quantity << "\n";
                 count++;
-            }
+            }*/
         }
     }
     catch(std::exception& e)

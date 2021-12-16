@@ -17,15 +17,6 @@ DiceKingdom::DiceKingdom()
 	map_of_buildings["Lumber Camp"] = &lumber;
 	map_of_buildings["Paint Rig"] = &rig;
 	map_of_buildings["Idle"] = &idle;
-
-	idle.add(Dice(4),12);
-	idle.add(Dice(4,2), 3);
-	idle.add(Dice(6),5);
-	idle.add(Dice(20));
-
-	lumber.add(Dice(4),12);
-
-	rig.add(Dice(8), 2);
 }
 
 void DiceKingdom::add_materials(std::map<std::string, unsigned int> m)
@@ -56,12 +47,29 @@ std::map<DiceWithoutHP, int, DiceCompareWithoutHP> DiceKingdom::return_dice_arra
 	return map_of_buildings[place]->return_dice_array();
 }
 
+std::set<DiceWithoutHP, DiceCompareWithoutHP> DiceKingdom::return_dice_array_combined_with_idle(std::string place)
+{
+	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> map_place = return_dice_array(place);
+	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> map_idle = return_dice_array("Idle");
+	std::set<DiceWithoutHP, DiceCompareWithoutHP> ret;
+	for(auto it = map_place.begin(); it != map_place.end(); it++)
+	{
+		ret.insert(it->first);
+	}
+	for(auto it = map_idle.begin(); it != map_idle.end(); it++)
+	{
+		ret.insert(it->first);
+	}
+	return ret;
+}
+
 void DiceKingdom::create_resources()
 {
 	resources.paint.quantity += rig.create_resources(); // create paint before doing anything else
-	idle.create_resources(); // prioritize fixing dices in idle
 	// create other resources in some arbitrary order
 	resources.wood.quantity += lumber.create_resources();
+
+	idle.create_resources(); // fixing dices in idle should have the lowest priority
 }
 
 const Dice DiceKingdom::find_most_damaged_dice(DiceWithoutHP dice,  std::string place)

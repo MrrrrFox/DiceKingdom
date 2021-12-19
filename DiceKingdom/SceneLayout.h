@@ -3,9 +3,12 @@
 #include "Place.h"
 #include "Spherical.h"
 #include "Terrain.h"
+#include "DiceKingdom.h"
 
 class SceneLayout
 {
+	typedef void (SceneLayout::*fun)(void);
+
 	int WIDTH = 600, HEIGHT = 400;
 	float width_to_height = (float)WIDTH/HEIGHT;
 	bool perspective_projection = false;
@@ -18,10 +21,10 @@ class SceneLayout
 	std::pair<int, int> player_position;
 	std::pair<float, float> hex_size{ sqrt(3.0f), 2.0f };
 
-	Spherical kingdom_camera = Spherical(3.0f, 1.2f, 0.7f);
+	std::map<std::string, fun> drawing_places;
 
 public:
-	Spherical map_camera = Spherical(3.0f, 1.2f, 0.7f); // TO DO: move to private
+	Spherical playing_camera = Spherical(3.0f, 1.2f, 0.7f); // TO DO: move to private
 	SceneLayout();
 	void initScene(std::pair<int,int> window_sizes);
 	void reshapeScreen(sf::Vector2u size);
@@ -33,12 +36,20 @@ public:
 	void set_hex_size(float _size);
 
 	void DrawMenu();
+
+	std::pair<float, float> CalculateHexPosition(int row, int column);
+	void DrawColorHex(GLfloat* color, int row, int column);
+
 	void DrawWorldMap(std::vector<Terrain> world_map);
 	void DrawTerrain(Terrain terrain);
 	void DrawUknown(int row, int column, std::pair<int,int> min_max_x, std::pair<int, int> min_max_z);
-	void DrawColorHex(GLfloat * color, int row, int column);
-	void DrawKingdom();
 	void DrawCastle(int row, int column);
+
+	void DrawKingdom(std::map<std::string, PlaceWithLimitedInformation> places, float time_to_proc);
+	void DrawIdle();
+	void DrawLumber();
+	void DrawRig();
+
 	void RenderString(float position[], void* font, const unsigned char* string, float colors[]);
 	//void drawText(const char* text, int text_length, int x_pos, int y_pos);
 };

@@ -5,7 +5,9 @@ enum class GameView
 	MENU 
 	, MAP
 	, KINGDOM
+	, KINGDOM_IDLE
 	, KINGDOM_LUMBER
+	, KINGDOM_RIG
 };
 
 

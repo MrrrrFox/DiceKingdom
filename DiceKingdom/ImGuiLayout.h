@@ -4,7 +4,7 @@
 
 class ImGuiLayout
 {
-	int WIDTH = 600, HEIGHT = 400;
+	unsigned int WIDTH = 600, HEIGHT = 400;
 
 	std::string menuText = "PRESS SPACE TO START A NEW GAME";
 
@@ -13,7 +13,7 @@ class ImGuiLayout
 	DiceKingdom* DK = nullptr;
 
 public:
-	void initImGui(sf::RenderWindow * window, int width, int height, DiceKingdom * _DK);
+	void initImGui(sf::RenderWindow * window, unsigned int width, unsigned int height, DiceKingdom * _DK);
 	void terminateImGui();
 
 	void drawMenuInfo();

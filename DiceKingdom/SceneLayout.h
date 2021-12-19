@@ -9,7 +9,7 @@ class SceneLayout
 {
 	typedef void (SceneLayout::*fun)(void);
 
-	int WIDTH = 600, HEIGHT = 400;
+	unsigned int WIDTH = 600, HEIGHT = 400;
 	float width_to_height = (float)WIDTH/HEIGHT;
 	bool perspective_projection = false;
 	std::pair<float, float> map_origin{ 0.0f, 0.0f };
@@ -26,12 +26,12 @@ class SceneLayout
 public:
 	Spherical playing_camera = Spherical(3.0f, 1.2f, 0.7f); // TO DO: move to private
 	SceneLayout();
-	void initScene(std::pair<int,int> window_sizes);
+	void initScene(std::pair<unsigned int,unsigned int> window_sizes);
 	void reshapeScreen(sf::Vector2u size);
 
 	bool get_perspective_projection();
 	void set_perspective_projection(bool _perspective_projection);
-	void set_width_height(int width, int height);
+	void set_width_height(unsigned int width, unsigned int height);
 	void set_map_origin(int _x_map_size, int _z_map_size);
 	void set_hex_size(float _size);
 

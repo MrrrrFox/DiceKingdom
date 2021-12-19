@@ -2,7 +2,7 @@
 #include "ImGuiLayout.h"
 #include "colors.h"
 
-void ImGuiLayout::initImGui(sf::RenderWindow* _window, int width, int height, DiceKingdom* _DK)
+void ImGuiLayout::initImGui(sf::RenderWindow* _window, unsigned int width, unsigned int height, DiceKingdom* _DK)
 {
 	ImGui::SFML::Init(*_window);
 	WIDTH = width;

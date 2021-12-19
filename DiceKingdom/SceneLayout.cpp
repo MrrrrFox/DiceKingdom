@@ -38,7 +38,7 @@ SceneLayout::SceneLayout()
 	drawing_places.insert(std::make_pair("Paint Rig", &SceneLayout::DrawRig));
 }
 
-void SceneLayout::initScene(std::pair<int, int> window_sizes)
+void SceneLayout::initScene(std::pair<unsigned int, unsigned int> window_sizes)
 {
 	set_width_height(window_sizes.first, window_sizes.second);
 
@@ -77,7 +77,7 @@ void SceneLayout::set_perspective_projection(bool _perspective_projection)
 	perspective_projection = _perspective_projection;
 }
 
-void SceneLayout::set_width_height(int width, int height)
+void SceneLayout::set_width_height(unsigned int width, unsigned int height)
 {
 	WIDTH = width;
 	HEIGHT = height;

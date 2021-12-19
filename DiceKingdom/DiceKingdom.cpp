@@ -8,9 +8,9 @@ DiceKingdom::DiceKingdom()
 	rig.set_paint(_paint);
 	idle.set_paint(_paint);
 
-	map_of_places_with_limited_information["Lumber Camp"] = PlaceWithLimitedInformation();
-	map_of_places_with_limited_information["Paint Rig"] = PlaceWithLimitedInformation();
-	map_of_places_with_limited_information["Idle"] = PlaceWithLimitedInformation();
+	map_of_places_with_limited_information["Lumber Camp"] = PlaceWithLimitedInformation(0, -1);
+	map_of_places_with_limited_information["Paint Rig"] = PlaceWithLimitedInformation(1, 0);
+	map_of_places_with_limited_information["Idle"] = PlaceWithLimitedInformation(0, 0);
 
 	map_of_buildings["Lumber Camp"] = &lumber;
 	map_of_buildings["Paint Rig"] = &rig;

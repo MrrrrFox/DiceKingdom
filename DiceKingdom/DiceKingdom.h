@@ -33,9 +33,10 @@ struct Resources
 
 struct PlaceWithLimitedInformation
 {
-	PlaceWithLimitedInformation(unsigned int _last_roll = 0) : last_roll(_last_roll) {}
+	PlaceWithLimitedInformation(int _x = 0, int _y = 0) : last_roll(0), position(std::make_pair(_x, _y)) {}
 
 	unsigned int last_roll;
+	std::pair<int, int> position;
 };
 
 class DiceKingdom

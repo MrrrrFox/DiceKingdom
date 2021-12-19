@@ -11,7 +11,7 @@ GameManager::GameManager(sf::RenderWindow* _window, int _WIDTH, int _HEIGHT)
 	(*window).setVerticalSyncEnabled(true);
 
 	imGuiLayout.initImGui(window, WIDTH, HEIGHT, &DK);
-	sceneLayout.initScene(std::pair<int,int>(WIDTH, HEIGHT));
+	sceneLayout.initScene(std::pair<int, int>(WIDTH, HEIGHT));
 	//sceneLayout.initScene(std::pair<int, int>(WIDTH, HEIGHT), std::pair<int,int>{0,0});
 }
 
@@ -75,22 +75,22 @@ void GameManager::Run()
 				{
 					currentView = GameView::KINGDOM_LUMBER;
 				}
-				else if (event.key.code == sf::Keyboard::Right)
+				else if(event.key.code == sf::Keyboard::Right)
 				{
-					sceneLayout.map_camera.theta -= (float)fmod(3 * deltaTime.asSeconds(), M_PI);
+					sceneLayout.map_camera.theta -= (float) fmod(3 * deltaTime.asSeconds(), M_PI);
 				}
-				else if (event.key.code == sf::Keyboard::Left)
+				else if(event.key.code == sf::Keyboard::Left)
 				{
-					sceneLayout.map_camera.theta += (float)fmod(3 * deltaTime.asSeconds(), M_PI);
+					sceneLayout.map_camera.theta += (float) fmod(3 * deltaTime.asSeconds(), M_PI);
 				}
 			}
-			else if (event.type == sf::Event::MouseWheelScrolled)
+			else if(event.type == sf::Event::MouseWheelScrolled)
 			{
-				if (event.mouseWheelScroll.delta < 0 && sceneLayout.map_camera.distance < 10.0f)
+				if(event.mouseWheelScroll.delta < 0 && sceneLayout.map_camera.distance < 10.0f)
 				{
 					sceneLayout.map_camera.distance += 10 * deltaTime.asSeconds();
 				}
-				else if (event.mouseWheelScroll.delta > 0 && sceneLayout.map_camera.distance > 2.0f)
+				else if(event.mouseWheelScroll.delta > 0 && sceneLayout.map_camera.distance > 2.0f)
 				{
 					sceneLayout.map_camera.distance -= 10 * deltaTime.asSeconds();
 				}
@@ -108,7 +108,7 @@ void GameManager::Run()
 
 		if(isPlaying)
 		{
-			if (procCountUpTime > procTime)
+			if(procCountUpTime > procTime)
 			{
 				Proc();
 				procCountUpTime = sf::seconds(0.0f);
@@ -147,19 +147,19 @@ void GameManager::DrawImGui()
 
 	switch(currentView)
 	{
-	case GameView::MENU:
-		imGuiLayout.drawMenuInfo();
-		break;
-	case GameView::MAP:
-		imGuiLayout.drawMaterialsBar(DK.get_resources());
-		break;
-	case GameView::KINGDOM:
-		imGuiLayout.drawMaterialsBar(DK.get_resources());
-		break;
-	case GameView::KINGDOM_LUMBER:
-		imGuiLayout.drawMaterialsBar(DK.get_resources());
-		imGuiLayout.drawPlacePanel("Lumber Camp");
-		break;
+		case GameView::MENU:
+			imGuiLayout.drawMenuInfo();
+			break;
+		case GameView::MAP:
+			imGuiLayout.drawMaterialsBar(DK.get_resources());
+			break;
+		case GameView::KINGDOM:
+			imGuiLayout.drawMaterialsBar(DK.get_resources());
+			break;
+		case GameView::KINGDOM_LUMBER:
+			imGuiLayout.drawMaterialsBar(DK.get_resources());
+			imGuiLayout.drawPlacePanel("Lumber Camp");
+			break;
 	}
 
 	ImGui::SFML::Render(*window);

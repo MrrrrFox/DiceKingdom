@@ -8,11 +8,9 @@ DiceKingdom::DiceKingdom()
 	rig.set_paint(_paint);
 	idle.set_paint(_paint);
 
-	vector_of_places_with_limited_information = {
-		PlaceWithLimitedInformation(lumber.get_name()),
-		PlaceWithLimitedInformation(rig.get_name()),
-		PlaceWithLimitedInformation(idle.get_name())
-	};
+	map_of_places_with_limited_information["Lumber Camp"] = PlaceWithLimitedInformation();
+	map_of_places_with_limited_information["Paint Rig"] = PlaceWithLimitedInformation();
+	map_of_places_with_limited_information["Idle"] = PlaceWithLimitedInformation();
 
 	map_of_buildings["Lumber Camp"] = &lumber;
 	map_of_buildings["Paint Rig"] = &rig;
@@ -65,14 +63,23 @@ std::set<DiceWithoutHP, DiceCompareWithoutHP> DiceKingdom::return_dice_array_com
 
 void DiceKingdom::create_resources()
 {
-	resources.paint.quantity += rig.create_resources(); // create paint before doing anything else
-	// create other resources in some arbitrary order
-	resources.wood.quantity += lumber.create_resources();
+	unsigned int temp;
 
-	idle.create_resources(); // fixing dices in idle should have the lowest priority
+	temp = rig.create_resources(); // create paint before doing anything else
+	resources.paint.quantity += temp;
+	map_of_places_with_limited_information[rig.get_name()].last_roll = temp;
+
+	// create other resources in some arbitrary order
+	temp = lumber.create_resources();
+	resources.wood.quantity += temp;
+	map_of_places_with_limited_information[lumber.get_name()].last_roll = temp;
+
+	idle.create_resources(); // fixing dices in idle should have low priority
+
+	// creating dices uses significant amount of paint so it should be done last
 }
 
-const Dice DiceKingdom::find_most_damaged_dice(DiceWithoutHP dice,  std::string place)
+const Dice DiceKingdom::find_most_damaged_dice(DiceWithoutHP dice, std::string place)
 {
 	Dice d(dice, max_dmg);
 	std::map<Dice, int, DiceCompare> m = (*map_of_buildings[place]->get_map());
@@ -87,7 +94,7 @@ const Dice DiceKingdom::find_most_damaged_dice(DiceWithoutHP dice,  std::string 
 	return d;
 }
 
-const Dice DiceKingdom::find_least_damaged_dice(DiceWithoutHP dice,  std::string place)
+const Dice DiceKingdom::find_least_damaged_dice(DiceWithoutHP dice, std::string place)
 {
 	Dice d(dice, 0);
 	std::map<Dice, int, DiceCompare> m = (*map_of_buildings[place]->get_map());

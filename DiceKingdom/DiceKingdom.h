@@ -33,9 +33,8 @@ struct Resources
 
 struct PlaceWithLimitedInformation
 {
-	PlaceWithLimitedInformation(std::string _name, unsigned int _last_roll = 0) : name(_name), last_roll(_last_roll) {}
+	PlaceWithLimitedInformation(unsigned int _last_roll = 0) : last_roll(_last_roll) {}
 
-	std::string name;
 	unsigned int last_roll;
 };
 
@@ -46,7 +45,7 @@ class DiceKingdom
 	Idle idle;
 
 	Resources resources;
-	std::vector<PlaceWithLimitedInformation> vector_of_places_with_limited_information;
+	std::map<std::string, PlaceWithLimitedInformation> map_of_places_with_limited_information;
 
 	std::map<std::string, Place*> map_of_buildings;
 
@@ -63,15 +62,15 @@ class DiceKingdom
 
 	void add_dice(std::string place, const Dice d, unsigned int n = 1);
 	const Dice find_most_damaged_dice(DiceWithoutHP dice, std::string place);
-	const Dice find_least_damaged_dice(DiceWithoutHP dice,  std::string place);
+	const Dice find_least_damaged_dice(DiceWithoutHP dice, std::string place);
 	void remove_dice(std::string place, const Dice d, unsigned int n = 1);
 
 	std::vector<Material*> get_resources()
 	{
 		return resources.available_materials_vector;
 	}
-	std::vector<PlaceWithLimitedInformation> get_vector_of_places_with_limited_information()
+	std::map<std::string, PlaceWithLimitedInformation> get_map_of_places_with_limited_information()
 	{
-		return vector_of_places_with_limited_information;
+		return map_of_places_with_limited_information;
 	}
 };

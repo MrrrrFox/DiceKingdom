@@ -9,7 +9,6 @@ class ImGuiLayout
 	std::string menuText = "PRESS SPACE TO START A NEW GAME";
 
 	float panels_widths[4] = { 30.0f, 80.0f, 50.0f, 80.0f };
-	float panels_padding_y = 3.5f;
 
 	DiceKingdom* DK = nullptr;
 

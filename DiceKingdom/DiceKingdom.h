@@ -62,9 +62,9 @@ class DiceKingdom
 	void create_resources();
 
 	void add_dice(const std::string& place, const Dice d, unsigned int n = 1);
-	const Dice find_most_damaged_dice(DiceWithoutHP dice, const std::string& place);
-	const Dice find_least_damaged_dice(DiceWithoutHP dice, const std::string& place);
-	void remove_dice(std::string place, const Dice d, unsigned int n = 1);
+	Dice find_most_damaged_dice(DiceWithoutHP dice, const std::string& place);
+	Dice find_least_damaged_dice(DiceWithoutHP dice, const std::string& place);
+	void remove_dice(const std::string &place, const Dice d, unsigned int n = 1);
 
 	std::vector<Material*> get_resources() const
 	{

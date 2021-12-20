@@ -79,7 +79,7 @@ void DiceKingdom::create_resources()
 	// creating dices uses significant amount of paint so it should be done last
 }
 
-const Dice DiceKingdom::find_most_damaged_dice(DiceWithoutHP dice, const std::string &place)
+Dice DiceKingdom::find_most_damaged_dice(DiceWithoutHP dice, const std::string &place)
 {
 	Dice d(dice, max_dmg);
 	std::map<Dice, int, DiceCompare> m = *map_of_buildings[place]->get_map();
@@ -94,10 +94,10 @@ const Dice DiceKingdom::find_most_damaged_dice(DiceWithoutHP dice, const std::st
 	return d;
 }
 
-const Dice DiceKingdom::find_least_damaged_dice(DiceWithoutHP dice, const std::string &place)
+Dice DiceKingdom::find_least_damaged_dice(DiceWithoutHP dice, const std::string &place)
 {
 	Dice d(dice, 0);
-	std::map<Dice, int, DiceCompare> m = (*map_of_buildings[place]->get_map());
+	std::map<Dice, int, DiceCompare> m = *map_of_buildings[place]->get_map();
 	auto it = m.find(d);
 	while(it == m.end())
 	{
@@ -109,7 +109,7 @@ const Dice DiceKingdom::find_least_damaged_dice(DiceWithoutHP dice, const std::s
 	return d;
 }
 
-void DiceKingdom::remove_dice(std::string place, const Dice d, unsigned int n)
+void DiceKingdom::remove_dice(const std::string &place, const Dice d, unsigned int n)
 {
 	map_of_buildings[place]->remove(d, n);
 }

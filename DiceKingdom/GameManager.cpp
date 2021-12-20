@@ -1,18 +1,13 @@
 #include "pch.h"
 #include "GameManager.h"
 
-GameManager::GameManager(sf::RenderWindow* _window, unsigned int _WIDTH, unsigned int _HEIGHT)
+GameManager::GameManager(sf::RenderWindow* _window, unsigned int _WIDTH, unsigned int _HEIGHT) : WIDTH(_WIDTH), HEIGHT(_HEIGHT), window(_window)
 {
-	WIDTH = _WIDTH;
-	HEIGHT = _HEIGHT;
-
-	window = _window;
 	(*window).setFramerateLimit(60);
 	(*window).setVerticalSyncEnabled(true);
 
 	imGuiLayout.initImGui(window, WIDTH, HEIGHT, &DK);
 	sceneLayout.initScene(std::pair<unsigned int, unsigned int>(WIDTH, HEIGHT));
-	//sceneLayout.initScene(std::pair<int, int>(WIDTH, HEIGHT), std::pair<int,int>{0,0});
 }
 
 void GameManager::Run()

@@ -38,6 +38,8 @@ class GameManager
 	public:
 	GameManager(sf::RenderWindow* window, unsigned int WIDTH, unsigned int HEIGHT);
 	void Run();
+	void KeyboardEvent(sf::Event event);
+	void MouseEvent(sf::Event event);
 	void CloseGame();
 
 	void DrawScene();

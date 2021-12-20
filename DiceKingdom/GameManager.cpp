@@ -25,94 +25,11 @@ void GameManager::Run()
 			}
 			if(event.type == sf::Event::KeyPressed)
 			{
-				if(event.key.code == sf::Keyboard::Enter)
-				{
-					sceneLayout.set_perspective_projection(!sceneLayout.get_perspective_projection());
-					sceneLayout.reshapeScreen((*window).getSize());
-				}
-				else if(event.key.code == sf::Keyboard::Space)
-				{
-					if(currentView == GameView::MENU)
-					{
-						currentView = GameView::KINGDOM;
-						isPlaying = true;
-						sceneLayout.set_perspective_projection(!sceneLayout.get_perspective_projection());
-						sceneLayout.reshapeScreen((*window).getSize());
-					}
-					else if(currentView == GameView::MAP)
-					{
-						currentView = GameView::KINGDOM;
-					}
-				}
-				else if(event.key.code == sf::Keyboard::Escape)
-				{
-					if(currentView == GameView::MENU)
-					{
-						isRunning = false;
-					}
-					else if(currentView == GameView::MAP)
-					{
-						currentView = GameView::MENU;
-						isPlaying = false;
-						sceneLayout.set_perspective_projection(!sceneLayout.get_perspective_projection());
-						sceneLayout.reshapeScreen((*window).getSize());
-					}
-					else if(currentView == GameView::KINGDOM)
-					{
-						currentView = GameView::MAP;
-					}
-					else if(currentView == GameView::KINGDOM_IDLE
-							|| currentView == GameView::KINGDOM_LUMBER
-							|| currentView == GameView::KINGDOM_RIG)
-					{
-						currentView = GameView::KINGDOM;
-					}
-				}
-				else if(currentView == GameView::KINGDOM)
-				{
-					if(event.key.code == sf::Keyboard::Num1)
-					{
-						currentView = GameView::KINGDOM_IDLE;
-					}
-					else if(event.key.code == sf::Keyboard::Num2)
-					{
-						currentView = GameView::KINGDOM_LUMBER;
-					}
-					else if(event.key.code == sf::Keyboard::Num3)
-					{
-						currentView = GameView::KINGDOM_RIG;
-					}
-				}
-				if(currentView == GameView::MAP || currentView == GameView::KINGDOM)
-				{
-					if(event.key.code == sf::Keyboard::Right)
-					{
-						sceneLayout.playing_camera.theta -= (float) fmod(3 * deltaTime.asSeconds(), M_PI);
-					}
-					else if(event.key.code == sf::Keyboard::Left)
-					{
-						sceneLayout.playing_camera.theta += (float) fmod(3 * deltaTime.asSeconds(), M_PI);
-					}
-					else if(event.key.code == sf::Keyboard::Down /* && sceneLayout.playing_camera.phi > M_PI / 5.0f */)
-					{
-						sceneLayout.playing_camera.phi -= deltaTime.asSeconds();
-					}
-					else if(event.key.code == sf::Keyboard::Up && sceneLayout.playing_camera.phi < M_PI / 2.0f)
-					{
-						sceneLayout.playing_camera.phi += deltaTime.asSeconds();
-					}
-				}
+				KeyboardEvent(event);
 			}
 			else if(event.type == sf::Event::MouseWheelScrolled)
 			{
-				if(event.mouseWheelScroll.delta < 0 && sceneLayout.playing_camera.distance < 10.0f)
-				{
-					sceneLayout.playing_camera.distance += 10 * deltaTime.asSeconds();
-				}
-				else if(event.mouseWheelScroll.delta > 0 && sceneLayout.playing_camera.distance > 2.0f)
-				{
-					sceneLayout.playing_camera.distance -= 10 * deltaTime.asSeconds();
-				}
+				MouseEvent(event);
 			}
 		}
 
@@ -125,15 +42,105 @@ void GameManager::Run()
 		DrawScene();
 		DrawImGui();
 
-		if(isPlaying)
+		if(isPlaying && procCountUpTime > procTime)
 		{
-			if(procCountUpTime > procTime)
-			{
-				Proc();
-				procCountUpTime = sf::seconds(0.0f);
-			}
+			Proc();
+			procCountUpTime = sf::seconds(0.0f);
 		}
 		(*window).display();
+	}
+}
+
+void GameManager::KeyboardEvent(sf::Event event)
+{
+	if(event.key.code == sf::Keyboard::Enter)
+	{
+		sceneLayout.set_perspective_projection(!sceneLayout.get_perspective_projection());
+		sceneLayout.reshapeScreen((*window).getSize());
+	}
+	else if(event.key.code == sf::Keyboard::Space)
+	{
+		if(currentView == GameView::MENU)
+		{
+			currentView = GameView::KINGDOM;
+			isPlaying = true;
+			sceneLayout.set_perspective_projection(!sceneLayout.get_perspective_projection());
+			sceneLayout.reshapeScreen((*window).getSize());
+		}
+		else if(currentView == GameView::MAP)
+		{
+			currentView = GameView::KINGDOM;
+		}
+	}
+	else if(event.key.code == sf::Keyboard::Escape)
+	{
+		if(currentView == GameView::MENU)
+		{
+			isRunning = false;
+		}
+		else if(currentView == GameView::MAP)
+		{
+			currentView = GameView::MENU;
+			isPlaying = false;
+			sceneLayout.set_perspective_projection(!sceneLayout.get_perspective_projection());
+			sceneLayout.reshapeScreen((*window).getSize());
+		}
+		else if(currentView == GameView::KINGDOM)
+		{
+			currentView = GameView::MAP;
+		}
+		else if(currentView == GameView::KINGDOM_IDLE
+				|| currentView == GameView::KINGDOM_LUMBER
+				|| currentView == GameView::KINGDOM_RIG)
+		{
+			currentView = GameView::KINGDOM;
+		}
+	}
+	else if(currentView == GameView::KINGDOM)
+	{
+		if(event.key.code == sf::Keyboard::Num1)
+		{
+			currentView = GameView::KINGDOM_IDLE;
+		}
+		else if(event.key.code == sf::Keyboard::Num2)
+		{
+			currentView = GameView::KINGDOM_LUMBER;
+		}
+		else if(event.key.code == sf::Keyboard::Num3)
+		{
+			currentView = GameView::KINGDOM_RIG;
+		}
+	}
+	if(currentView == GameView::MAP || currentView == GameView::KINGDOM)
+	{
+		if(event.key.code == sf::Keyboard::Right)
+		{
+			sceneLayout.playing_camera.theta -= (float) fmod(3 * deltaTime.asSeconds(), M_PI);
+		}
+		else if(event.key.code == sf::Keyboard::Left)
+		{
+			sceneLayout.playing_camera.theta += (float) fmod(3 * deltaTime.asSeconds(), M_PI);
+		}
+		else if(event.key.code == sf::Keyboard::Down /* && sceneLayout.playing_camera.phi > M_PI / 5.0f */)
+		{
+			sceneLayout.playing_camera.phi -= deltaTime.asSeconds();
+		}
+		else if(event.key.code == sf::Keyboard::Up && sceneLayout.playing_camera.phi < M_PI / 2.0f)
+		{
+			sceneLayout.playing_camera.phi += deltaTime.asSeconds();
+		}
+	}
+}
+
+void GameManager::MouseEvent(sf::Event event)
+{
+	if(event.mouseWheelScroll.delta < 0 && sceneLayout.playing_camera.distance < 10.0f)
+	{
+		sceneLayout.playing_camera.distance += 10 * deltaTime.asSeconds();
+	}
+	else if(event.mouseWheelScroll.delta > 0 && sceneLayout.playing_camera.distance > 2.0f)
+	{
+		sceneLayout.playing_camera.distance -= 10 * deltaTime.asSeconds();
 	}
 }
 
@@ -189,6 +196,8 @@ void GameManager::DrawImGui()
 			imGuiLayout.drawMaterialsBar(DK.get_resources());
 			imGuiLayout.drawPlacePanel("Paint Rig");
 			break;
+		default:
+			std::cerr << "Unrecognized value of currentView(" << static_cast<int> (currentView) << " in GameManager::DrawImGui()\n";
 	}
 
 	ImGui::SFML::Render(*window);

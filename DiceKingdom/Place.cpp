@@ -109,8 +109,8 @@ void Place::add_to_map_if_damaged(Dice d, std::map<Dice, int, DiceCompare>& dama
 		float check;
 		std::random_device rd;
 		std::mt19937 gen(rd());
-		std::uniform_real_distribution<> dis(0, 1);
-		check = static_cast<float> (dis(gen));
+		std::uniform_real_distribution<float> dis(0, 1);
+		check = dis(gen);
 		if(check > damage_modifier)
 			return;
 	}

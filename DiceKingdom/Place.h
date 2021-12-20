@@ -11,10 +11,12 @@ class Place
 		// (0,1) -> lower probability to do damage
 		// 0 -> no damage
 		// <0 -> undefined
-	int* paint;   // points to paint in DiceKingdom -> Resources -> Material paint
+	int* paint = nullptr;   // points to paint in DiceKingdom -> Resources -> Material paint
 
 	public:
-	Place(std::string _name, float _dmg_modifier = 1) : name(_name), damage_modifier(_dmg_modifier), paint(0) {}
+	Place(const std::string& _name, float _dmg_modifier = 1) : name(_name), damage_modifier(_dmg_modifier) {}
+	virtual ~Place() = default;
+
 	std::map<Dice, int, DiceCompare>* get_map()
 	{
 		return &m;
@@ -27,11 +29,13 @@ class Place
 	{
 		return paint;
 	}
-	bool is_empty();
+	bool is_empty() const;
 	int count_dices();
 	void add(const Dice d, unsigned int n = 1);
 	void remove(const Dice d, unsigned int n = 1);
 	unsigned int roll();
+	void destroy_dices_if_not_enough_paint(std::map<Dice, int, DiceCompare>& damaged_priority);
+	void damage_dices_if_not_enough_paint(std::map<Dice, int, DiceCompare>& damaged);
 	std::string get_name();
 	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> return_dice_array();
 

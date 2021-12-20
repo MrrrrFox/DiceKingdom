@@ -17,7 +17,7 @@ DiceKingdom::DiceKingdom()
 	map_of_buildings["Idle"] = &idle;
 }
 
-void DiceKingdom::add_materials(std::map<std::string, unsigned int> m)
+void DiceKingdom::add_materials(std::map<std::string, unsigned int, std::less<>> m)
 {
 	for(auto it = m.begin(); it != m.end(); it++)
 	{
@@ -25,27 +25,27 @@ void DiceKingdom::add_materials(std::map<std::string, unsigned int> m)
 	}
 }
 
-void DiceKingdom::add_dice(std::string place, const Dice d, unsigned int n)
+void DiceKingdom::add_dice(const std::string &place, const Dice d, unsigned int n)
 {
 	map_of_buildings[place]->add(d, n);
 }
 
-bool DiceKingdom::is_empty(std::string place)
+bool DiceKingdom::is_empty(const std::string &place)
 {
 	return map_of_buildings[place]->is_empty();
 }
 
-int DiceKingdom::count_dices(std::string place)
+int DiceKingdom::count_dices(const std::string &place)
 {
 	return map_of_buildings[place]->count_dices();
 }
 
-std::map<DiceWithoutHP, int, DiceCompareWithoutHP> DiceKingdom::return_dice_array(std::string place)
+std::map<DiceWithoutHP, int, DiceCompareWithoutHP> DiceKingdom::return_dice_array(const std::string &place)
 {
 	return map_of_buildings[place]->return_dice_array();
 }
 
-std::set<DiceWithoutHP, DiceCompareWithoutHP> DiceKingdom::return_dice_array_combined_with_idle(std::string place)
+std::set<DiceWithoutHP, DiceCompareWithoutHP> DiceKingdom::return_dice_array_combined_with_idle(const std::string &place)
 {
 	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> map_place = return_dice_array(place);
 	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> map_idle = return_dice_array("Idle");
@@ -79,22 +79,22 @@ void DiceKingdom::create_resources()
 	// creating dices uses significant amount of paint so it should be done last
 }
 
-const Dice DiceKingdom::find_most_damaged_dice(DiceWithoutHP dice, std::string place)
+const Dice DiceKingdom::find_most_damaged_dice(DiceWithoutHP dice, const std::string &place)
 {
 	Dice d(dice, max_dmg);
-	std::map<Dice, int, DiceCompare> m = (*map_of_buildings[place]->get_map());
+	std::map<Dice, int, DiceCompare> m = *map_of_buildings[place]->get_map();
 	auto it = m.find(d);
 	while(it == m.end())
 	{
 		if(d.damage == 0)
-			throw std::runtime_error("Invalid value");
+			throw std::invalid_argument("Invalid value in find_most_damaged_dice");
 		d.damage--;
 		it = m.find(d);
 	}
 	return d;
 }
 
-const Dice DiceKingdom::find_least_damaged_dice(DiceWithoutHP dice, std::string place)
+const Dice DiceKingdom::find_least_damaged_dice(DiceWithoutHP dice, const std::string &place)
 {
 	Dice d(dice, 0);
 	std::map<Dice, int, DiceCompare> m = (*map_of_buildings[place]->get_map());
@@ -102,7 +102,7 @@ const Dice DiceKingdom::find_least_damaged_dice(DiceWithoutHP dice, std::string 
 	while(it == m.end())
 	{
 		if(d.damage > max_dmg)
-			throw std::runtime_error("Invalid value");
+			throw std::invalid_argument("Invalid value in find_least_damaged_dice");
 		d.damage++;
 		it = m.find(d);
 	}

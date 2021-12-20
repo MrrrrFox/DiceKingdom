@@ -220,7 +220,7 @@ void SceneLayout::DrawColorHex(GLfloat * color, int row, int column)
 	delete[] color;
 }
 
-void SceneLayout::DrawKingdom(std::map<std::string, PlaceWithLimitedInformation> places, float time_to_proc)
+void SceneLayout::DrawKingdom(std::map<std::string, PlaceWithLimitedInformation, std::less<>> places, float time_to_proc)
 {	
 	Spherical playing_camera_north = Spherical(playing_camera.distance, playing_camera.theta, playing_camera.phi + 0.01f);
 	gluLookAt(playing_camera.getX(), playing_camera.getY(), playing_camera.getZ(),

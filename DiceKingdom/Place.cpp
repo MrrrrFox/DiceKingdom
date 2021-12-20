@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Place.h"
 
-bool Place::is_empty()
+bool Place::is_empty() const
 {
 	return m.empty();
 }
@@ -31,7 +31,7 @@ void Place::remove(const Dice d, unsigned int n)
 	it->second -= n;
 	// TODO: Change the number of dices displayed
 	if(it->second < 0)
-		throw std::runtime_error("Invalid value");
+		throw std::invalid_argument("Invalid value in Place::remove");
 	if(it->second == 0)
 		m.erase(it);
 	// TODO: Stop displaying dices
@@ -74,6 +74,13 @@ unsigned int Place::roll()
 	// TODO: Display result or every single roll, depending on number of dices in Place
 
 	// Change the damage status of dices unless there is enough paint stored
+	destroy_dices_if_not_enough_paint(damaged_priority);
+	damage_dices_if_not_enough_paint(damaged);
+	return result;
+}
+
+void Place::destroy_dices_if_not_enough_paint(std::map<Dice, int, DiceCompare>& damaged_priority)
+{
 	for(auto it = damaged_priority.begin(); it != damaged_priority.end(); it++)
 	{
 		for(int i = 0; i < it->second; i++)
@@ -84,13 +91,17 @@ unsigned int Place::roll()
 				remove(it->first, 1);
 		}
 	}
+}
+
+void Place::damage_dices_if_not_enough_paint(std::map<Dice, int, DiceCompare>& damaged)
+{
+	int dmg = 1;
+	if(damage_modifier > 1)
+	{
+		dmg = static_cast<int> (damage_modifier);
+	}
 	for(auto it = damaged.begin(); it != damaged.end(); it++)
 	{
-		int dmg = 1;
-		if(damage_modifier > 1)
-		{
-			dmg = static_cast<int> (damage_modifier);
-		}
 		for(int i = 0; i < it->second; i++)
 		{
 			if((*paint) > 0)
@@ -102,7 +113,6 @@ unsigned int Place::roll()
 			}
 		}
 	}
-	return result;
 }
 
 std::map<DiceWithoutHP, int, DiceCompareWithoutHP> Place::return_dice_array()

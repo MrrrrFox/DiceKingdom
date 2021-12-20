@@ -23,7 +23,7 @@ int main()
 		{
 			std::srand(static_cast<unsigned int>(std::time(NULL)));
 			DiceKingdom dk;
-			std::map<std::string, unsigned int> initialize;
+			std::map<std::string, unsigned int, std::less<>> initialize;
 			initialize["Paint"] = 10;
 			dk.add_materials(initialize);
 			dk.add_dice("Lumber Camp", Dice(6), 400);

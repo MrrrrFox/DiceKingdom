@@ -45,7 +45,7 @@ public:
 	void DrawUknown(int row, int column, std::pair<int,int> min_max_x, std::pair<int, int> min_max_z);
 	void DrawCastle(int row, int column);
 
-	void DrawKingdom(std::map<std::string, PlaceWithLimitedInformation> places, float time_to_proc);
+	void DrawKingdom(std::map<std::string, PlaceWithLimitedInformation, std::less<>> places, float time_to_proc);
 	void DrawIdle();
 	void DrawLumber();
 	void DrawRig();

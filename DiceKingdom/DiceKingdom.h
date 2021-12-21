@@ -3,6 +3,7 @@
 #include "Lumber.h"
 #include "PaintRig.h"
 #include "Idle.h"
+#include "enums.h"
 
 struct Material
 {
@@ -75,3 +76,5 @@ class DiceKingdom
 		return map_of_places_with_limited_information;
 	}
 };
+
+std::string convert_enum_to_place_name(GameView place);

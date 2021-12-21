@@ -23,5 +23,6 @@
 #include <unordered_map>
 #include <set>
 #include <random>
+#include <array>
 
 #endif //PCH_H

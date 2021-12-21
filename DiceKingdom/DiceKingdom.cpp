@@ -25,27 +25,27 @@ void DiceKingdom::add_materials(std::map<std::string, unsigned int, std::less<>>
 	}
 }
 
-void DiceKingdom::add_dice(const std::string &place, const Dice d, unsigned int n)
+void DiceKingdom::add_dice(const std::string& place, const Dice d, unsigned int n)
 {
 	map_of_buildings[place]->add(d, n);
 }
 
-bool DiceKingdom::is_empty(const std::string &place)
+bool DiceKingdom::is_empty(const std::string& place)
 {
 	return map_of_buildings[place]->is_empty();
 }
 
-int DiceKingdom::count_dices(const std::string &place)
+int DiceKingdom::count_dices(const std::string& place)
 {
 	return map_of_buildings[place]->count_dices();
 }
 
-std::map<DiceWithoutHP, int, DiceCompareWithoutHP> DiceKingdom::return_dice_array(const std::string &place)
+std::map<DiceWithoutHP, int, DiceCompareWithoutHP> DiceKingdom::return_dice_array(const std::string& place)
 {
 	return map_of_buildings[place]->return_dice_array();
 }
 
-std::set<DiceWithoutHP, DiceCompareWithoutHP> DiceKingdom::return_dice_array_combined_with_idle(const std::string &place)
+std::set<DiceWithoutHP, DiceCompareWithoutHP> DiceKingdom::return_dice_array_combined_with_idle(const std::string& place)
 {
 	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> map_place = return_dice_array(place);
 	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> map_idle = return_dice_array("Idle");
@@ -79,7 +79,7 @@ void DiceKingdom::create_resources()
 	// creating dices uses significant amount of paint so it should be done last
 }
 
-Dice DiceKingdom::find_most_damaged_dice(DiceWithoutHP dice, const std::string &place)
+Dice DiceKingdom::find_most_damaged_dice(DiceWithoutHP dice, const std::string& place)
 {
 	Dice d(dice, max_dmg);
 	std::map<Dice, int, DiceCompare> m = *map_of_buildings[place]->get_map();
@@ -94,7 +94,7 @@ Dice DiceKingdom::find_most_damaged_dice(DiceWithoutHP dice, const std::string &
 	return d;
 }
 
-Dice DiceKingdom::find_least_damaged_dice(DiceWithoutHP dice, const std::string &place)
+Dice DiceKingdom::find_least_damaged_dice(DiceWithoutHP dice, const std::string& place)
 {
 	Dice d(dice, 0);
 	std::map<Dice, int, DiceCompare> m = *map_of_buildings[place]->get_map();
@@ -109,7 +109,22 @@ Dice DiceKingdom::find_least_damaged_dice(DiceWithoutHP dice, const std::string 
 	return d;
 }
 
-void DiceKingdom::remove_dice(const std::string &place, const Dice d, unsigned int n)
+void DiceKingdom::remove_dice(const std::string& place, const Dice d, unsigned int n)
 {
 	map_of_buildings[place]->remove(d, n);
+}
+
+std::string convert_enum_to_place_name(GameView place)
+{
+	switch(place)
+	{
+		case GameView::KINGDOM_IDLE:
+			return std::string("Idle");
+		case GameView::KINGDOM_LUMBER:
+			return std::string("Lumber Camp");
+		case GameView::KINGDOM_RIG:
+			return std::string("Paint Rig");
+		default:
+			throw std::invalid_argument("Invalid argument in convert_enum_to_place_name: " + std::to_string(static_cast<int> (place)));
+	}
 }

@@ -40,7 +40,9 @@ class GameManager
 	void Run();
 	void KeyboardEvent(sf::Event event);
 	void MouseEvent(sf::Event event);
-	void CloseGame();
+	void SwitchBuildings(sf::Event event);
+	void MapMovement(sf::Event event);
+	void CloseGame() const;
 
 	void DrawScene();
 	void DrawImGui();

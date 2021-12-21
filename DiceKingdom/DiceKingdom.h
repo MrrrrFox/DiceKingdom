@@ -28,7 +28,6 @@ struct Resources
 	Material some_super_advanced_material{"Stone"};
 
 	std::vector<Material*> available_materials_vector;
-
 	std::map<std::string, Material*, std::less<>> map_of_materials;
 };
 
@@ -48,7 +47,6 @@ class DiceKingdom
 
 	Resources resources;
 	std::map<std::string, PlaceWithLimitedInformation, std::less<>> map_of_places_with_limited_information;
-
 	std::map<std::string, Place*, std::less<>> map_of_buildings;
 
 	public:

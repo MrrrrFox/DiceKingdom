@@ -7,10 +7,10 @@ void DrawCircle3D(float x_center, float y_center, float z_center, float radius, 
 	glBegin(GL_POLYGON);
 	for (int i = 0; i < segments_num; ++i)
 	{
-		theta = 2.0f * M_PI * float(i) / float(segments_num);
+		theta = 2.0f * static_cast<float> (M_PI) * static_cast<float> (i) / static_cast<float> (segments_num);
 
-		x = 0.05 * cosf(theta);
-		y = 0.05 * sinf(theta);
+		x = radius * cosf(theta);
+		y = radius * sinf(theta);
 
 		glVertex3f(x_center + x, y_center + y, z_center);
 	}
@@ -19,10 +19,6 @@ void DrawCircle3D(float x_center, float y_center, float z_center, float radius, 
 
 SceneLayout::SceneLayout()
 {
-	int foo = 1;
-	char* bar[1] = { (char *)" " };
-	glutInit(&foo, bar);
-
 	perspective_projection = false;
 
 	menuTexture.loadFromFile("textures/menu.png");
@@ -238,20 +234,6 @@ void SceneLayout::DrawKingdom(std::map<std::string, PlaceWithLimitedInformation,
 	DrawColorHex(new GLfloat[3]{ 0.49f, 0.78f, 0.31f }, 1, -1);
 	DrawColorHex(new GLfloat[3]{ 0.4f, 0.76f, 0.79f }, 0, 1);
 	DrawColorHex(new GLfloat[3]{ 0.4f, 0.76f, 0.79f }, 1, 1);
-
-	// draw last rolls
-	float colors[4] = { 0.0, 0.0, 0.0, time_to_proc };
-	for (auto place = places.begin(); place != places.end(); ++place)
-	{
-		if (place->second.last_roll > 0)
-		{
-			std::pair<float, float> pos = CalculateHexPosition(place->second.position.first, place->second.position.second);
-			float position[3] = { pos.first, 0.4, pos.second };
-			RenderString(position, GLUT_BITMAP_HELVETICA_18, (const unsigned char*)std::to_string(place->second.last_roll).data(), colors);
-		}
-	}
-
-
 }
 
 void SceneLayout::DrawIdle()
@@ -545,36 +527,4 @@ void SceneLayout::RenderString(float position[], void * font, const unsigned cha
 {
 	glColor4f(colors[0], colors[1], colors[2], colors[3]);
 	glRasterPos3f(position[0], position[1], position[2]);
-
-	/*const unsigned char* c;
-
-	for (c = string; *c != '\0'; ++c)
-	{
-		glutStrokeCharacter(font, *c);
-	}*/
-
-	glutBitmapString(font, string);
 }
-
-//void GraphicsManager::drawText(const char* text, int text_length, int x_pos, int y_pos)
-//{
-//	glMatrixMode(GL_PROJECTION);
-//	double* matrix = new double[16];
-//	glGetDoublev(GL_PROJECTION, matrix);
-//	glLoadIdentity();
-//	glOrtho(0, (GLdouble)WIDTH, 0, (GLdouble)HEIGHT, -5, 5);
-//	glMatrixMode(GL_MODELVIEW);
-//	glLoadIdentity();
-//	glPushMatrix();
-//	glLoadIdentity();
-//	glRasterPos2i(x_pos, y_pos);
-//	for (int i = 0; i < text_length; ++i)
-//	{
-//		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, (int)text[i]);
-//	}
-//	glPopMatrix();
-//	glMatrixMode(GL_PROJECTION);
-//	glLoadMatrixd(matrix);
-//	glMatrixMode(GL_MODELVIEW);
-//
-//}

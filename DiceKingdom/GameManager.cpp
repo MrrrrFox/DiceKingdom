@@ -179,22 +179,14 @@ void GameManager::DrawImGui()
 			imGuiLayout.drawMenuInfo();
 			break;
 		case GameView::MAP:
-			imGuiLayout.drawMaterialsBar(DK.get_resources());
-			break;
 		case GameView::KINGDOM:
 			imGuiLayout.drawMaterialsBar(DK.get_resources());
 			break;
 		case GameView::KINGDOM_IDLE:
-			imGuiLayout.drawMaterialsBar(DK.get_resources());
-			imGuiLayout.drawPlacePanel("Idle");
-			break;
 		case GameView::KINGDOM_LUMBER:
-			imGuiLayout.drawMaterialsBar(DK.get_resources());
-			imGuiLayout.drawPlacePanel("Lumber Camp");
-			break;
 		case GameView::KINGDOM_RIG:
 			imGuiLayout.drawMaterialsBar(DK.get_resources());
-			imGuiLayout.drawPlacePanel("Paint Rig");
+			imGuiLayout.drawPlacePanel(currentView);
 			break;
 		default:
 			std::cerr << "Unrecognized value of currentView(" << static_cast<int> (currentView) << " in GameManager::DrawImGui()\n";

@@ -3,6 +3,7 @@
 #include "Lumber.h"
 #include "PaintRig.h"
 #include "Idle.h"
+#include "enums.h"
 
 struct Material
 {
@@ -64,7 +65,7 @@ class DiceKingdom
 	void add_dice(const std::string& place, const Dice d, unsigned int n = 1);
 	Dice find_most_damaged_dice(DiceWithoutHP dice, const std::string& place);
 	Dice find_least_damaged_dice(DiceWithoutHP dice, const std::string& place);
-	void remove_dice(const std::string &place, const Dice d, unsigned int n = 1);
+	void remove_dice(const std::string& place, const Dice d, unsigned int n = 1);
 
 	std::vector<Material*> get_resources() const
 	{
@@ -75,3 +76,5 @@ class DiceKingdom
 		return map_of_places_with_limited_information;
 	}
 };
+
+std::string convert_enum_to_place_name(GameView place);

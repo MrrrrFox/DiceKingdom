@@ -5,5 +5,5 @@ class Lumber : public Place
 {
 	public:
 	Lumber() : Place("Lumber Camp") {}
-	unsigned int create_resources();
+	unsigned int create_resources() final;
 };

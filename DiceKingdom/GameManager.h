@@ -9,8 +9,10 @@
 class GameManager
 {
 	GameView currentView = GameView::MENU;
-	bool isRunning = true, isPlaying = false;
-	int WIDTH = 600, HEIGHT = 400;
+	bool isRunning = true;
+	bool isPlaying = false;
+	unsigned int WIDTH = 600;
+	unsigned int HEIGHT = 400;
 
 	SceneLayout sceneLayout;
 	ImGuiLayout imGuiLayout;
@@ -29,12 +31,18 @@ class GameManager
 
 	sf::RenderWindow* window;
 	sf::Clock deltaClock;
-	sf::Time deltaTime, procCountUpTime = sf::seconds(0.0f), procTime = sf::seconds(1.0f);
+	sf::Time deltaTime;
+	sf::Time procCountUpTime = sf::seconds(0.0f);
+	sf::Time procTime = sf::seconds(1.0f);
 
 	public:
-	GameManager(sf::RenderWindow* window, int WIDTH, int HEIGHT);
+	GameManager(sf::RenderWindow* window, unsigned int WIDTH, unsigned int HEIGHT);
 	void Run();
-	void CloseGame();
+	void KeyboardEvent(sf::Event event);
+	void MouseEvent(sf::Event event);
+	void SwitchBuildings(sf::Event event);
+	void MapMovement(sf::Event event);
+	void CloseGame() const;
 
 	void DrawScene();
 	void DrawImGui();

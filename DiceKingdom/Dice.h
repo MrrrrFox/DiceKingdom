@@ -3,7 +3,7 @@ constexpr auto max_dmg = 3;//maximum damage a dice can have before it is broken
 
 struct DiceWithoutHP
 {
-	DiceWithoutHP(unsigned int _faces) : faces(_faces) {}
+	explicit DiceWithoutHP(unsigned int _faces) : faces(_faces) {}
 
 	unsigned int faces;
 };

@@ -2,7 +2,7 @@
 
 enum class GameView
 {
-	MENU 
+	MENU
 	, MAP
 	, KINGDOM
 	, KINGDOM_IDLE

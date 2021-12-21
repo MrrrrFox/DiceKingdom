@@ -1,18 +1,13 @@
 #include "pch.h"
 #include "GameManager.h"
 
-GameManager::GameManager(sf::RenderWindow* _window, int _WIDTH, int _HEIGHT)
+GameManager::GameManager(sf::RenderWindow* _window, unsigned int _WIDTH, unsigned int _HEIGHT) : WIDTH(_WIDTH), HEIGHT(_HEIGHT), window(_window)
 {
-	WIDTH = _WIDTH;
-	HEIGHT = _HEIGHT;
-
-	window = _window;
 	(*window).setFramerateLimit(60);
 	(*window).setVerticalSyncEnabled(true);
 
 	imGuiLayout.initImGui(window, WIDTH, HEIGHT, &DK);
-	sceneLayout.initScene(std::pair<int, int>(WIDTH, HEIGHT));
-	//sceneLayout.initScene(std::pair<int, int>(WIDTH, HEIGHT), std::pair<int,int>{0,0});
+	sceneLayout.initScene(std::pair<unsigned int, unsigned int>(WIDTH, HEIGHT));
 }
 
 void GameManager::Run()
@@ -30,94 +25,11 @@ void GameManager::Run()
 			}
 			if(event.type == sf::Event::KeyPressed)
 			{
-				if(event.key.code == sf::Keyboard::Enter)
-				{
-					sceneLayout.set_perspective_projection(!sceneLayout.get_perspective_projection());
-					sceneLayout.reshapeScreen((*window).getSize());
-				}
-				else if(event.key.code == sf::Keyboard::Space)
-				{
-					if(currentView == GameView::MENU)
-					{
-						currentView = GameView::KINGDOM;
-						isPlaying = true;
-						sceneLayout.set_perspective_projection(!sceneLayout.get_perspective_projection());
-						sceneLayout.reshapeScreen((*window).getSize());
-					}
-					else if(currentView == GameView::MAP)
-					{
-						currentView = GameView::KINGDOM;
-					}
-				}
-				else if(event.key.code == sf::Keyboard::Escape)
-				{
-					if(currentView == GameView::MENU)
-					{
-						isRunning = false;
-					}
-					else if(currentView == GameView::MAP)
-					{
-						currentView = GameView::MENU;
-						isPlaying = false;
-						sceneLayout.set_perspective_projection(!sceneLayout.get_perspective_projection());
-						sceneLayout.reshapeScreen((*window).getSize());
-					}
-					else if(currentView == GameView::KINGDOM)
-					{
-						currentView = GameView::MAP;
-					}
-					else if(currentView == GameView::KINGDOM_IDLE 
-							|| currentView == GameView::KINGDOM_LUMBER
-							|| currentView == GameView::KINGDOM_RIG)
-					{
-						currentView = GameView::KINGDOM;
-					}
-				}
-				else if(currentView == GameView::KINGDOM)
-				{
-					if (event.key.code == sf::Keyboard::Num1)
-					{
-						currentView = GameView::KINGDOM_IDLE;
-					}
-					else if (event.key.code == sf::Keyboard::Num2)
-					{
-						currentView = GameView::KINGDOM_LUMBER;
-					}
-					else if (event.key.code == sf::Keyboard::Num3)
-					{
-						currentView = GameView::KINGDOM_RIG;
-					}
-				}
-				if (currentView == GameView::MAP || currentView == GameView::KINGDOM)
-				{
-					if (event.key.code == sf::Keyboard::Right)
-					{
-						sceneLayout.playing_camera.theta -= (float)fmod(3 * deltaTime.asSeconds(), M_PI);
-					}
-					else if (event.key.code == sf::Keyboard::Left)
-					{
-						sceneLayout.playing_camera.theta += (float)fmod(3 * deltaTime.asSeconds(), M_PI);
-					}
-					else if (event.key.code == sf::Keyboard::Down /* && sceneLayout.playing_camera.phi > M_PI / 5.0f */)
-					{
-						sceneLayout.playing_camera.phi -= deltaTime.asSeconds();
-					}
-					else if (event.key.code == sf::Keyboard::Up && sceneLayout.playing_camera.phi < M_PI / 2.0f)
-					{
-						sceneLayout.playing_camera.phi += deltaTime.asSeconds();
-					}
-				}
+				KeyboardEvent(event);
 			}
-			else if (event.type == sf::Event::MouseWheelScrolled)
+			else if(event.type == sf::Event::MouseWheelScrolled)
 			{
-				if (event.mouseWheelScroll.delta < 0 && sceneLayout.playing_camera.distance < 10.0f)
-				{
-					sceneLayout.playing_camera.distance += 10 * deltaTime.asSeconds();
-				}
-				else if (event.mouseWheelScroll.delta > 0 && sceneLayout.playing_camera.distance > 2.0f)
-				{
-					sceneLayout.playing_camera.distance -= 10 * deltaTime.asSeconds();
-				}
+				MouseEvent(event);
 			}
 		}
 
@@ -130,15 +42,115 @@ void GameManager::Run()
 		DrawScene();
 		DrawImGui();
 
-		if(isPlaying)
+		if(isPlaying && procCountUpTime > procTime)
 		{
-			if(procCountUpTime > procTime)
-			{
-				Proc();
-				procCountUpTime = sf::seconds(0.0f);
-			}
+			Proc();
+			procCountUpTime = sf::seconds(0.0f);
 		}
 		(*window).display();
+	}
+}
+
+void GameManager::KeyboardEvent(sf::Event event)
+{
+	if(event.key.code == sf::Keyboard::Enter)
+	{
+		sceneLayout.set_perspective_projection(!sceneLayout.get_perspective_projection());
+		sceneLayout.reshapeScreen((*window).getSize());
+	}
+	else if(event.key.code == sf::Keyboard::Space)
+	{
+		if(currentView == GameView::MENU)
+		{
+			currentView = GameView::KINGDOM;
+			isPlaying = true;
+			sceneLayout.set_perspective_projection(!sceneLayout.get_perspective_projection());
+			sceneLayout.reshapeScreen((*window).getSize());
+		}
+		else if(currentView == GameView::MAP)
+		{
+			currentView = GameView::KINGDOM;
+		}
+	}
+	else if(event.key.code == sf::Keyboard::Escape)
+	{
+		if(currentView == GameView::MENU)
+		{
+			isRunning = false;
+		}
+		else if(currentView == GameView::MAP)
+		{
+			currentView = GameView::MENU;
+			isPlaying = false;
+			sceneLayout.set_perspective_projection(!sceneLayout.get_perspective_projection());
+			sceneLayout.reshapeScreen((*window).getSize());
+		}
+		else if(currentView == GameView::KINGDOM)
+		{
+			currentView = GameView::MAP;
+		}
+		else if(currentView == GameView::KINGDOM_IDLE
+				|| currentView == GameView::KINGDOM_LUMBER
+				|| currentView == GameView::KINGDOM_RIG)
+		{
+			currentView = GameView::KINGDOM;
+		}
+	}
+	else if(currentView == GameView::KINGDOM)
+	{
+		SwitchBuildings(event);
+	}
+	if(currentView == GameView::MAP || currentView == GameView::KINGDOM)
+	{
+		MapMovement(event);
+	}
+}
+
+void GameManager::MouseEvent(sf::Event event)
+{
+	if(event.mouseWheelScroll.delta < 0 && sceneLayout.get_playing_camera()->distance < 10.0f)
+	{
+		sceneLayout.get_playing_camera()->distance += 10 * deltaTime.asSeconds();
+	}
+	else if(event.mouseWheelScroll.delta > 0 && sceneLayout.get_playing_camera()->distance > 2.0f)
+	{
+		sceneLayout.get_playing_camera()->distance -= 10 * deltaTime.asSeconds();
+	}
+}
+
+void GameManager::SwitchBuildings(sf::Event event)
+{
+	if(event.key.code == sf::Keyboard::Num1)
+	{
+		currentView = GameView::KINGDOM_IDLE;
+	}
+	else if(event.key.code == sf::Keyboard::Num2)
+	{
+		currentView = GameView::KINGDOM_LUMBER;
+	}
+	else if(event.key.code == sf::Keyboard::Num3)
+	{
+		currentView = GameView::KINGDOM_RIG;
+	}
+}
+
+void GameManager::MapMovement(sf::Event event)
+{
+	if(event.key.code == sf::Keyboard::Right)
+	{
+		sceneLayout.get_playing_camera()->theta -= (float) fmod(3 * deltaTime.asSeconds(), M_PI);
+	}
+	else if(event.key.code == sf::Keyboard::Left)
+	{
+		sceneLayout.get_playing_camera()->theta += (float) fmod(3 * deltaTime.asSeconds(), M_PI);
+	}
+	else if(event.key.code == sf::Keyboard::Down && sceneLayout.get_playing_camera()->phi > M_PI / 5.0f)
+	{
+		sceneLayout.get_playing_camera()->phi -= deltaTime.asSeconds();
+	}
+	else if(event.key.code == sf::Keyboard::Up && sceneLayout.get_playing_camera()->phi < M_PI / 2.0f)
+	{
+		sceneLayout.get_playing_camera()->phi += deltaTime.asSeconds();
 	}
 }
 
@@ -163,7 +175,7 @@ void GameManager::DrawScene()
 			sceneLayout.DrawKingdom(DK.get_map_of_places_with_limited_information(), (sf::seconds(1.0f) - procCountUpTime) / procTime);
 			break;
 		default:
-			throw std::invalid_argument("unknown view to draw: " + std::to_string((int)currentView));
+			throw std::invalid_argument("unknown view to draw: " + std::to_string((int) currentView));
 	}
 }
 
@@ -173,27 +185,21 @@ void GameManager::DrawImGui()
 
 	switch(currentView)
 	{
-	case GameView::MENU:
-		imGuiLayout.drawMenuInfo();
-		break;
-	case GameView::MAP:
-		imGuiLayout.drawMaterialsBar(DK.get_resources());
-		break;
-	case GameView::KINGDOM:
-		imGuiLayout.drawMaterialsBar(DK.get_resources());
-		break;
-	case GameView::KINGDOM_IDLE:
-		imGuiLayout.drawMaterialsBar(DK.get_resources());
-		imGuiLayout.drawPlacePanel("Idle");
-		break;
-	case GameView::KINGDOM_LUMBER:
-		imGuiLayout.drawMaterialsBar(DK.get_resources());
-		imGuiLayout.drawPlacePanel("Lumber Camp");
-		break;
-	case GameView::KINGDOM_RIG:
-		imGuiLayout.drawMaterialsBar(DK.get_resources());
-		imGuiLayout.drawPlacePanel("Paint Rig");
-		break;
+		case GameView::MENU:
+			imGuiLayout.drawMenuInfo();
+			break;
+		case GameView::MAP:
+		case GameView::KINGDOM:
+			imGuiLayout.drawMaterialsBar(DK.get_resources());
+			break;
+		case GameView::KINGDOM_IDLE:
+		case GameView::KINGDOM_LUMBER:
+		case GameView::KINGDOM_RIG:
+			imGuiLayout.drawMaterialsBar(DK.get_resources());
+			imGuiLayout.drawPlacePanel(currentView);
+			break;
+		default:
+			std::cerr << "Unrecognized value of currentView(" << static_cast<int> (currentView) << " in GameManager::DrawImGui()\n";
 	}
 
 	ImGui::SFML::Render(*window);
@@ -214,11 +220,11 @@ void GameManager::Proc()
 			DK.create_resources();
 			break;
 		default:
-			throw std::invalid_argument("unknown view to draw: " + std::to_string((int)currentView));
+			throw std::invalid_argument("unknown view to draw: " + std::to_string((int) currentView));
 	}
 }
 
-void GameManager::CloseGame()
+void GameManager::CloseGame() const
 {
 	imGuiLayout.terminateImGui();
 }

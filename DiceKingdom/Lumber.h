@@ -4,6 +4,6 @@
 class Lumber : public Place
 {
 	public:
-	Lumber() : Place("Lumber Camp") {}
+	explicit Lumber(const std::string& name) : Place(name) {}
 	unsigned int create_resources() final;
 };

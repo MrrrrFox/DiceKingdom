@@ -1,25 +1,22 @@
 #include "pch.h"
 #include "SceneLayout.h"
 
-void DrawCircle3D(float x_center, float y_center, float z_center, float radius, int segments_num)
+void DrawCircle3D(float x_center, float y_center, float z_center, float radius, int segments_num) noexcept
 {
-	float x;
-	float y;
-	float theta;
 	glBegin(GL_POLYGON);
 	for(int i = 0; i < segments_num; ++i)
 	{
-		theta = 2.0f * static_cast<float> (M_PI) * static_cast<float> (i) / static_cast<float> (segments_num);
+		const float theta = 2.0f * static_cast<float> (M_PI) * static_cast<float> (i) / static_cast<float> (segments_num);
 
-		x = radius * cosf(theta);
-		y = radius * sinf(theta);
+		const float x = radius * cosf(theta);
+		const float y = radius * sinf(theta);
 
 		glVertex3f(x_center + x, y_center + y, z_center);
 	}
 	glEnd();
 }
 
-SceneLayout::SceneLayout()
+SceneLayout::SceneLayout(float hex_size)
 {
 	menuTexture.loadFromFile("textures/menu.png");
 	menuTexture.generateMipmap();
@@ -27,7 +24,7 @@ SceneLayout::SceneLayout()
 	unknownTerrainTexture.loadFromFile("textures/terra_incognita.png");
 	unknownTerrainTexture.generateMipmap();
 
-	set_hex_size(0.5f);
+	set_hex_size(hex_size);
 
 	drawing_places.try_emplace("Idle", &SceneLayout::DrawIdle);
 	drawing_places.try_emplace("Lumber Camp", &SceneLayout::DrawLumber);
@@ -49,59 +46,59 @@ void SceneLayout::initScene(std::pair<unsigned int, unsigned int> window_sizes)
 	glEnable(GL_COLOR_MATERIAL);
 
 	std::array<GLfloat, 4> light_ambient_global = {0.5,0.5,0.5,1};
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient_global._Elems);
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient_global.data());
 }
 
-void SceneLayout::reshapeScreen(sf::Vector2u size) const
+void SceneLayout::reshapeScreen(sf::Vector2u size) const noexcept
 {
-	glViewport(0, 0, (GLsizei) size.x, (GLsizei) size.y);
+	glViewport(0, 0, static_cast<GLsizei> (size.x), static_cast<GLsizei> (size.y));
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	if(perspective_projection)
-		gluPerspective(45.0f, (GLdouble) size.x / (GLdouble) size.y, 0.1, 100.0);
+		gluPerspective(45.0f, static_cast<GLdouble> (size.x) / static_cast<GLdouble> (size.y), 0.1, 100.0);
 	else
-		glOrtho(-((GLdouble) size.x / (GLdouble) size.y), ((GLdouble) size.x / (GLdouble) size.y), -1.0, 1.0, -3.0, 12.0);
+		glOrtho(-(static_cast<GLdouble> (size.x) / static_cast<GLdouble> (size.y)), (static_cast<GLdouble> (size.x) / static_cast<GLdouble> (size.y)), -1.0, 1.0, -3.0, 12.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
 
-bool SceneLayout::get_perspective_projection() const
+bool SceneLayout::get_perspective_projection() const noexcept
 {
 	return perspective_projection;
 }
 
-void SceneLayout::set_perspective_projection(bool _perspective_projection)
+void SceneLayout::set_perspective_projection(bool _perspective_projection) noexcept
 {
 	perspective_projection = _perspective_projection;
 }
 
-void SceneLayout::set_width_height(unsigned int width, unsigned int height)
+void SceneLayout::set_width_height(unsigned int width, unsigned int height) noexcept
 {
 	WIDTH = width;
 	HEIGHT = height;
 	width_to_height = static_cast<float> (WIDTH) / static_cast<float> (HEIGHT);
 }
 
-void SceneLayout::set_map_origin(int DK_pos_x, int DK_pos_z)
+void SceneLayout::set_map_origin(int DK_pos_x, int DK_pos_z) noexcept
 {
-	map_origin.first = -((DK_pos_x % 2 ? hex_size.first : hex_size.first / 2) + static_cast<float> (DK_pos_z) * hex_size.first);
+	map_origin.first = -(((DK_pos_x % 2) ? hex_size.first : hex_size.first / 2) + static_cast<float> (DK_pos_z) * hex_size.first);
 	map_origin.second = -(hex_size.second / 2.0f + static_cast<float> (DK_pos_x) * 3.0f / 4.0f * hex_size.second);
 }
 
-void SceneLayout::set_hex_size(float _size)
+void SceneLayout::set_hex_size(float _size) noexcept
 {
-	hex_size.first = (float) sqrt(3) * _size;
+	hex_size.first = static_cast<float> (sqrt(3)) * _size;
 	hex_size.second = 2.0f * _size;
 }
 
-Spherical* SceneLayout::get_playing_camera()
+Spherical* SceneLayout::get_playing_camera() noexcept
 {
 	return &playing_camera;
 }
 
 void SceneLayout::DrawMenu() const
 {
-	auto menu_camera_north = Spherical(menu_camera.distance, menu_camera.theta, menu_camera.phi + 0.01f);
+	const auto menu_camera_north = Spherical(menu_camera.distance, menu_camera.theta, menu_camera.phi + 0.01f);
 	gluLookAt(menu_camera.getX(), menu_camera.getY(), menu_camera.getZ(),
 			  0.0, 0.0, 0.0,
 			  menu_camera_north.getX(), menu_camera_north.getY(), menu_camera_north.getZ());
@@ -121,7 +118,7 @@ void SceneLayout::DrawMenu() const
 
 void SceneLayout::DrawWorldMap(const std::vector<Terrain>& world_map) const
 {
-	auto playing_camera_north = Spherical(playing_camera.distance, playing_camera.theta, playing_camera.phi + 0.01f);
+	const auto playing_camera_north = Spherical(playing_camera.distance, playing_camera.theta, playing_camera.phi + 0.01f);
 	gluLookAt(playing_camera.getX(), playing_camera.getY(), playing_camera.getZ(),
 			  0.0, 0.0, 0.0,
 			  playing_camera_north.getX(), playing_camera_north.getY(), playing_camera_north.getZ());
@@ -167,7 +164,7 @@ void SceneLayout::DrawTerrain(Terrain terrain) const
 			break;
 		default:
 			DrawColorHex({0.0f, 0.0f, 0.0f}, terrain.position.first, terrain.position.second);
-			throw std::invalid_argument("unknown terrain: " + std::to_string((int) terrain.terrainType));
+			throw std::invalid_argument("unknown terrain: " + std::to_string(static_cast<int> (terrain.terrainType)));
 	}
 }
 
@@ -177,14 +174,14 @@ void SceneLayout::DrawUknown(int row, int column, std::pair<int, int> min_max_x,
 	glEnable(GL_TEXTURE_2D);
 	sf::Texture::bind(&unknownTerrainTexture);
 
-	int size_x = (min_max_x.second == min_max_x.first ? 1 : min_max_x.second - min_max_x.first);
-	int size_z = (min_max_z.second == min_max_z.first ? 1 : min_max_z.second - min_max_z.first);
-	float tex_hex_h = hex_size.second / (hex_size.second * static_cast<float> (size_x));
-	float tex_hex_w = hex_size.first / (hex_size.first * static_cast<float> (size_z));
+	const int size_x = (min_max_x.second == min_max_x.first ? 1 : min_max_x.second - min_max_x.first);
+	const int size_z = (min_max_z.second == min_max_z.first ? 1 : min_max_z.second - min_max_z.first);
+	const float tex_hex_h = hex_size.second / (hex_size.second * static_cast<float> (size_x));
+	const float tex_hex_w = hex_size.first / (hex_size.first * static_cast<float> (size_z));
 
 	// it may not work for little maps,
-	float	dx = (static_cast<float> (row - min_max_x.first) / static_cast<float> (size_x)) * (1.0f - 2 * tex_hex_w) + tex_hex_w;
-	float dz = (static_cast<float> (column - min_max_z.first) / static_cast<float> (size_z)) * (1.0f - 2 * tex_hex_h) + tex_hex_h;
+	const float dx = (static_cast<float> (row - min_max_x.first) / static_cast<float> (size_x)) * (1.0f - 2 * tex_hex_w) + tex_hex_w;
+	const float dz = (static_cast<float> (column - min_max_z.first) / static_cast<float> (size_z)) * (1.0f - 2 * tex_hex_h) + tex_hex_h;
 
 	glPushMatrix();
 	glTranslatef((row % 2 == 0 ? 0.0f : hex_size.first / 2.0f) + static_cast<float> (column) * hex_size.first, 0.0, static_cast<float> (row) * 3.0f / 4.0f * hex_size.second);
@@ -199,14 +196,14 @@ void SceneLayout::DrawUknown(int row, int column, std::pair<int, int> min_max_x,
 	glPopMatrix();
 }
 
-std::pair<float, float> SceneLayout::CalculateHexPosition(int row, int column) const
+std::pair<float, float> SceneLayout::CalculateHexPosition(int row, int column) const noexcept
 {
 	float x_pos = (row % 2 == 0 ? 0.0f : hex_size.first / 2.0f) + static_cast<float> (column) * hex_size.first;
 	float z_pos = static_cast<float> (row) * 3.0f / 4.0f * hex_size.second;
 	return std::pair<float, float>(x_pos, z_pos);
 }
 
-void SceneLayout::DrawColorHex(std::array<GLfloat, 3> color, int row, int column) const
+void SceneLayout::DrawColorHex(std::array<GLfloat, 3> color, int row, int column) const noexcept
 {
 	glPushMatrix();
 	glTranslatef((row % 2 == 0 ? 0.0f : hex_size.first / 2.0f) + static_cast<float> (column) * hex_size.first, 0.0, static_cast<float> (row) * 3.0f / 4.0f * hex_size.second);
@@ -223,15 +220,15 @@ void SceneLayout::DrawColorHex(std::array<GLfloat, 3> color, int row, int column
 
 void SceneLayout::DrawKingdom(std::map<std::string, PlaceWithLimitedInformation, std::less<>> places, [[maybe_unused]] float time_to_proc)
 {
-	auto playing_camera_north = Spherical(playing_camera.distance, playing_camera.theta, playing_camera.phi + 0.01f);
+	const auto playing_camera_north = Spherical(playing_camera.distance, playing_camera.theta, playing_camera.phi + 0.01f);
 	gluLookAt(playing_camera.getX(), playing_camera.getY(), playing_camera.getZ(),
 			  0.0, 0.0, 0.0,
 			  playing_camera_north.getX(), playing_camera_north.getY(), playing_camera_north.getZ());
 
-		  // draw places
+	// draw places
 	for(auto place = places.begin(); place != places.end(); ++place)
 	{
-		(this->*drawing_places[place->first])();
+		(this->*drawing_places[place->first])(place->second.position.first, place->second.position.second);
 	}
 	DrawColorHex({0.49f, 0.78f, 0.31f}, -1, 0);
 	DrawColorHex({0.49f, 0.78f, 0.31f}, -1, -1);
@@ -241,11 +238,9 @@ void SceneLayout::DrawKingdom(std::map<std::string, PlaceWithLimitedInformation,
 	DrawColorHex({0.4f, 0.76f, 0.79f}, 1, 1);
 }
 
-void SceneLayout::DrawIdle() const
+void SceneLayout::DrawIdle(int row, int column) const noexcept
 {
-	int logs = 6;
-	int row = 0;
-	int column = 0;
+	constexpr int logs = 6;
 	DrawColorHex({0.76f, 0.7f, 0.5f}, 0, 0);
 
 	GLUquadricObj* qobj = gluNewQuadric();
@@ -281,11 +276,9 @@ void SceneLayout::DrawIdle() const
 	glPopMatrix();
 }
 
-void SceneLayout::DrawLumber() const
+void SceneLayout::DrawLumber(int row, int column) const
 {
-	unsigned int tmp;
-	int row = 0;
-	int column = -1;
+	unsigned int tmp = 0;
 	DrawColorHex({0.49f, 0.78f, 0.31f}, row, column);
 
 	GLUquadricObj* qobj = gluNewQuadric();
@@ -294,10 +287,10 @@ void SceneLayout::DrawLumber() const
 
 	std::array<float, 2> wall_sizes = {hex_size.first / 4, hex_size.first / 6};
 
-	std::array<std::array<float, 2>, 4> walls_offsets = {{	{0.0, wall_sizes[1]},
-															{wall_sizes[0], 0.0},
-															{0.0, -wall_sizes[1]},
-															{-wall_sizes[0], 0.0} }};
+	std::array<std::array<float, 2>, 4> walls_offsets = {{	{0.0, wall_sizes.at(1)},
+															{wall_sizes.at(0), 0.0},
+															{0.0, -wall_sizes.at(1)},
+															{-wall_sizes.at(0), 0.0} }};
 
 	glPushMatrix();
 	glTranslatef((row % 2 == 0 ? 0.0f : hex_size.first / 2.0f) + static_cast<float> (column) * hex_size.first - hex_size.first / 8, 0.0, static_cast<float> (row) * 3.0f / 4.0f * hex_size.second - hex_size.second / 8);
@@ -309,15 +302,17 @@ void SceneLayout::DrawLumber() const
 		tmp = i % 2;
 		glPushMatrix();
 		glColor3f(0.73f, 0.55f, 0.39f);
-		glTranslatef(walls_offsets[i][0], 0.0, walls_offsets[i][1]);
+		glTranslatef(walls_offsets.at(i).at(0), 0.0, walls_offsets.at(i).at(1));
 
-		if(tmp == 1) glRotatef(90.0, 0.0, 1.0, 0.0);
+		if(tmp == 1)
+			glRotatef(90.0, 0.0, 1.0, 0.0);
 		glBegin(GL_POLYGON);
-		glVertex3f(-wall_sizes[tmp], 0.2f, 0.0f);
-		glVertex3f(-wall_sizes[tmp], 0.0, 0.0f);
-		glVertex3f(wall_sizes[tmp], 0.0, 0.0f);
-		glVertex3f(wall_sizes[tmp], 0.2f, 0.0f);
-		if(tmp == 1) glVertex3f(0.0, 0.2f + wall_sizes[1], 0.0f);
+		glVertex3f(-wall_sizes.at(tmp), 0.2f, 0.0f);
+		glVertex3f(-wall_sizes.at(tmp), 0.0, 0.0f);
+		glVertex3f(wall_sizes.at(tmp), 0.0, 0.0f);
+		glVertex3f(wall_sizes.at(tmp), 0.2f, 0.0f);
+		if(tmp == 1)
+			glVertex3f(0.0, 0.2f + wall_sizes.at(1), 0.0f);
 		glEnd();
 
 		glPopMatrix();
@@ -328,14 +323,14 @@ void SceneLayout::DrawLumber() const
 		tmp = i % 2;
 		glPushMatrix();
 		glColor3f(0.55f, 0.38f, 0.26f);
-		glTranslatef(0.0, 0.2f, (tmp == 0 ? wall_sizes[1] : -wall_sizes[1]));
+		glTranslatef(0.0, 0.2f, (tmp == 0 ? wall_sizes.at(1) : -wall_sizes.at(1)));
 
 		glRotatef((tmp == 0 ? -45.0f : 45.0f), 1.0, 0.0, 0.0);
 		glBegin(GL_QUADS);
-		glVertex3f(-wall_sizes[0] - 0.05f, 0.22f, 0.0f);
-		glVertex3f(-wall_sizes[0] - 0.05f, -0.05f, 0.0f);
-		glVertex3f(wall_sizes[0] + 0.05f, -0.05f, 0.0f);
-		glVertex3f(wall_sizes[0] + 0.05f, 0.22f, 0.0f);
+		glVertex3f(-wall_sizes.at(0) - 0.05f, 0.22f, 0.0f);
+		glVertex3f(-wall_sizes.at(0) - 0.05f, -0.05f, 0.0f);
+		glVertex3f(wall_sizes.at(0) + 0.05f, -0.05f, 0.0f);
+		glVertex3f(wall_sizes.at(0) + 0.05f, 0.22f, 0.0f);
 		glEnd();
 
 		glPopMatrix();
@@ -377,10 +372,8 @@ void SceneLayout::DrawLumber() const
 	glPopMatrix();
 }
 
-void SceneLayout::DrawRig() const
+void SceneLayout::DrawRig(int row, int column) const
 {
-	int row = 1;
-	int column = 0;
 	DrawColorHex({0.4f, 0.76f, 0.79f}, row, column);
 
 	GLUquadricObj* qobj = gluNewQuadric();
@@ -411,7 +404,7 @@ void SceneLayout::DrawRig() const
 		// leg
 		glPushMatrix();
 		glColor3f(0.5f, 0.5f, 0.5f);
-		glTranslatef(legs_offsets[i][0], 0.0, legs_offsets[i][1]);
+		glTranslatef(legs_offsets.at(i).at(0), 0.0, legs_offsets.at(i).at(1));
 		glRotatef(270.0, 1.0, 0.0, 0.0);
 		gluCylinder(qobj, 0.03, 0.03, 0.15, 15, 5);
 		glPopMatrix();
@@ -419,7 +412,7 @@ void SceneLayout::DrawRig() const
 		// wall
 		glPushMatrix();
 		glColor3f(0.41f, 0.41f, 0.41f);
-		glTranslatef(walls_offsets[i][0], 0.15f, walls_offsets[i][1]);
+		glTranslatef(walls_offsets.at(i).at(0), 0.15f, walls_offsets.at(i).at(1));
 		if(i % 2)
 			glRotatef(90.0, 0.0, 1.0, 0.0);
 		glBegin(GL_QUADS);
@@ -433,7 +426,7 @@ void SceneLayout::DrawRig() const
 		// window
 		glPushMatrix();
 		glColor3f(0.0f, 0.0f, 0.0f);
-		glTranslatef(windows_offsets[i][0], 0.175f, windows_offsets[i][1]);
+		glTranslatef(windows_offsets.at(i).at(0), 0.175f, windows_offsets.at(i).at(1));
 		if(i % 2)
 			glRotatef(90.0, 0.0, 1.0, 0.0);
 		glBegin(GL_QUADS);
@@ -509,7 +502,7 @@ void SceneLayout::DrawCastle(int row, int column) const
 		// mini-tower
 		glPushMatrix();
 		glColor3f(0.82f, 0.82f, 0.82f);
-		glTranslatef(mini_tower_offsets[i][0], 0.0, mini_tower_offsets[i][1]);
+		glTranslatef(mini_tower_offsets.at(i).at(0), 0.0, mini_tower_offsets.at(i).at(1));
 		glRotatef(270.0, 1.0, 0.0, 0.0);
 		gluCylinder(qobj, 0.075, 0.075, 0.2, 15, 5);
 		// mini-tower's roof
@@ -521,7 +514,7 @@ void SceneLayout::DrawCastle(int row, int column) const
 		// wall
 		glPushMatrix();
 		glColor3f(0.66f, 0.66f, 0.66f);
-		glTranslatef(walls_offsets[i][0], 0.0, walls_offsets[i][1]);
+		glTranslatef(walls_offsets.at(i).at(0), 0.0, walls_offsets.at(i).at(1));
 		if(i % 2)
 			glRotatef(90.0, 0.0, 1.0, 0.0);
 		glBegin(GL_QUADS);

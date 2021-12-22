@@ -14,9 +14,9 @@ class GameManager
 	unsigned int WIDTH = 600;
 	unsigned int HEIGHT = 400;
 
-	SceneLayout sceneLayout;
+	SceneLayout sceneLayout{0.5f};
 	ImGuiLayout imGuiLayout;
-	DiceKingdom DK;
+	DiceKingdom DK{std::map<std::string, unsigned int, std::less<>>()};
 
 	std::vector<Terrain> world_map = {Terrain(TerrainType::DICE_KINGDOM, true, {0, 0}),
 		Terrain(TerrainType::SEA, true, {0, 1}), Terrain(TerrainType::SEA, true, {0, -1}),
@@ -40,7 +40,7 @@ class GameManager
 	void Run();
 	void KeyboardEvent(sf::Event event);
 	void MouseEvent(sf::Event event);
-	void SwitchBuildings(sf::Event event);
+	void SwitchBuildings(sf::Event event) noexcept;
 	void MapMovement(sf::Event event);
 	void CloseGame() const;
 

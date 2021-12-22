@@ -8,6 +8,14 @@ GameManager::GameManager(sf::RenderWindow* _window, unsigned int _WIDTH, unsigne
 
 	imGuiLayout.initImGui(window, WIDTH, HEIGHT, &DK);
 	sceneLayout.initScene(std::pair<unsigned int, unsigned int>(WIDTH, HEIGHT));
+
+	// DEBUG
+	DK.add_dice(convert_enum_to_place_name(GameView::KINGDOM_IDLE), Dice(4), 12);
+	DK.add_dice(convert_enum_to_place_name(GameView::KINGDOM_IDLE), Dice(4, 2), 3);
+	DK.add_dice(convert_enum_to_place_name(GameView::KINGDOM_IDLE), Dice(6), 5);
+	DK.add_dice(convert_enum_to_place_name(GameView::KINGDOM_IDLE), Dice(20));
+	DK.add_dice(convert_enum_to_place_name(GameView::KINGDOM_LUMBER), Dice(4), 12);
+	DK.add_dice(convert_enum_to_place_name(GameView::KINGDOM_RIG), Dice(8), 2);
 }
 
 void GameManager::Run()
@@ -118,7 +126,7 @@ void GameManager::MouseEvent(sf::Event event)
 	}
 }
 
-void GameManager::SwitchBuildings(sf::Event event)
+void GameManager::SwitchBuildings(sf::Event event) noexcept
 {
 	if(event.key.code == sf::Keyboard::Num1)
 	{
@@ -138,11 +146,11 @@ void GameManager::MapMovement(sf::Event event)
 {
 	if(event.key.code == sf::Keyboard::Right)
 	{
-		sceneLayout.get_playing_camera()->theta -= (float) fmod(3 * deltaTime.asSeconds(), M_PI);
+		sceneLayout.get_playing_camera()->theta -= static_cast<float> (fmod(3 * deltaTime.asSeconds(), M_PI));
 	}
 	else if(event.key.code == sf::Keyboard::Left)
 	{
-		sceneLayout.get_playing_camera()->theta += (float) fmod(3 * deltaTime.asSeconds(), M_PI);
+		sceneLayout.get_playing_camera()->theta += static_cast<float> (fmod(3 * deltaTime.asSeconds(), M_PI));
 	}
 	else if(event.key.code == sf::Keyboard::Down && sceneLayout.get_playing_camera()->phi > M_PI / 5.0f)
 	{

@@ -1,12 +1,12 @@
 #include "pch.h"
 #include "Place.h"
 
-bool Place::is_empty() const
+bool Place::is_empty() const noexcept
 {
 	return m.empty();
 }
 
-int Place::count_dices()
+int Place::count_dices() noexcept
 {
 	int result = 0;
 	for(auto it = m.begin(); it != m.end(); it++)
@@ -44,7 +44,7 @@ unsigned int Place::roll()
 
 	for(auto it = m.begin(); it != m.end(); it++)
 	{
-		std::uniform_int_distribution<unsigned int> dis(1, it->first.dice.faces);
+		const std::uniform_int_distribution<unsigned int> dis(1, it->first.dice.faces);
 		for(int i = 0; i < it->second; i++)
 		{
 			unsigned int pips;
@@ -103,13 +103,13 @@ void Place::add_to_map_if_damaged(Dice d, std::map<Dice, int, DiceCompare>& dama
 {
 	if(damage_modifier <= 0)
 		return;
-	unsigned int destroyed = max_dmg;   // dices with damage value lower than this number will not be destroyed, only damaged
+	unsigned int destroyed = max_dmg;	// dices with damage value lower than this number will not be destroyed, only damaged
 	if(damage_modifier < 1)
 	{
 		float check;
 		std::random_device rd;
 		std::mt19937 gen(rd());
-		std::uniform_real_distribution<float> dis(0, 1);
+		const std::uniform_real_distribution<float> dis(0, 1);
 		check = dis(gen);
 		if(check > damage_modifier)
 			return;

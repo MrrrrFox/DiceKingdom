@@ -11,26 +11,32 @@ class Place
 		// (0,1) -> lower probability to do damage
 		// 0 -> no damage
 		// <0 -> undefined
-	int* paint = nullptr;   // points to paint in DiceKingdom -> Resources -> Material paint
+	int* paint = nullptr;	// points to paint in DiceKingdom -> Resources -> Material paint
+
+	protected:
+	Place(const Place&) = default;
+	Place& operator=(const Place&) = default;
+	Place(Place&&) = default;
+	Place& operator=(Place&&) = default;
 
 	public:
 	Place(const std::string& _name, float _dmg_modifier = 1) : name(_name), damage_modifier(_dmg_modifier) {}
 	virtual ~Place() = default;
 
-	std::map<Dice, int, DiceCompare>* get_map()
+	std::map<Dice, int, DiceCompare>* get_map() noexcept
 	{
 		return &m;
 	}
-	void set_paint(int* _paint)
+	void set_paint(int* _paint) noexcept
 	{
 		paint = _paint;
 	}
-	int* get_paint()
+	int* get_paint() noexcept
 	{
 		return paint;
 	}
-	bool is_empty() const;
-	int count_dices();
+	bool is_empty() const noexcept;
+	int count_dices() noexcept;
 	void add(const Dice d, unsigned int n = 1);
 	void remove(const Dice d, unsigned int n = 1);
 	unsigned int roll();

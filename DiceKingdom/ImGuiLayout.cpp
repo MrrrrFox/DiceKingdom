@@ -4,6 +4,8 @@
 
 void ImGuiLayout::initImGui(sf::RenderWindow* _window, unsigned int width, unsigned int height, DiceKingdom* _DK)
 {
+	if(_window == nullptr)
+		throw std::invalid_argument("Parameter _window in ImGuiLayout::initImGui should not be NULL\n");
 	ImGui::SFML::Init(*_window);
 	WIDTH = width;
 	HEIGHT = height;
@@ -13,16 +15,6 @@ void ImGuiLayout::initImGui(sf::RenderWindow* _window, unsigned int width, unsig
 	style.WindowTitleAlign = ImVec2(0.5f, 0.5f);
 	style.Colors[ImGuiCol_TitleBg] = gray;
 	style.Colors[ImGuiCol_TitleBgActive] = gray;
-
-
-	DK->add_dice("Idle", Dice(4), 12);
-	DK->add_dice("Idle", Dice(4, 2), 3);
-	DK->add_dice("Idle", Dice(6), 5);
-	DK->add_dice("Idle", Dice(20));
-
-	DK->add_dice("Lumber Camp", Dice(4), 12);
-
-	DK->add_dice("Paint Rig", Dice(8), 2);
 }
 
 void ImGuiLayout::terminateImGui() const
@@ -48,7 +40,7 @@ void ImGuiLayout::drawMenuInfo()
 
 void ImGuiLayout::drawMaterialsBar(const std::vector<Material*>& materials) const
 {
-	auto size = static_cast<int> (materials.size());
+	const auto size = static_cast<int> (materials.size());
 
 	ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
 	ImGui::SetNextWindowSize(ImVec2(static_cast<float> (WIDTH), 20.0f));
@@ -74,7 +66,7 @@ void ImGuiLayout::drawPlacePanel(GameView place_enum)
 
 	std::set<DiceWithoutHP, DiceCompareWithoutHP> dices_combined = DK->return_dice_array_combined_with_idle(placeName);
 	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> dices_in_place = DK->return_dice_array(placeName);
-	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> dices_in_idle = DK->return_dice_array("Idle");
+	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> dices_in_idle = DK->return_dice_array(convert_enum_to_place_name(GameView::KINGDOM_IDLE));
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 10.0f);
 	ImGui::PushStyleColor(ImGuiCol_Button, gray);
@@ -86,15 +78,15 @@ void ImGuiLayout::drawPlacePanel(GameView place_enum)
 
 	if(ImGui::BeginTable(placeName.data(), 4, ImGuiTableFlags_BordersInnerH))
 	{
-		ImGui::TableSetupColumn("dice type", ImGuiTableColumnFlags_WidthFixed, panels_widths[0]);
-		ImGui::TableSetupColumn("decreasing values", ImGuiTableColumnFlags_WidthFixed, panels_widths[1]);
-		ImGui::TableSetupColumn("quantity", ImGuiTableColumnFlags_WidthFixed, panels_widths[2]);
-		ImGui::TableSetupColumn("increasing values", ImGuiTableColumnFlags_WidthFixed, panels_widths[3]);
+		ImGui::TableSetupColumn("dice type", ImGuiTableColumnFlags_WidthFixed, panels_widths.at(0));
+		ImGui::TableSetupColumn("decreasing values", ImGuiTableColumnFlags_WidthFixed, panels_widths.at(1));
+		ImGui::TableSetupColumn("quantity", ImGuiTableColumnFlags_WidthFixed, panels_widths.at(2));
+		ImGui::TableSetupColumn("increasing values", ImGuiTableColumnFlags_WidthFixed, panels_widths.at(3));
 
-		bool idle = (place_enum == GameView::KINGDOM_IDLE);
-		for(auto dice_type = dices_combined.begin(); dice_type != dices_combined.end(); ++dice_type)
+		const bool idle = (place_enum == GameView::KINGDOM_IDLE);
+		for(auto dice_type : dices_combined)
 		{
-			drawDiceRow(*dice_type, dices_in_place, dices_in_idle, idle, placeName, btn_id);
+			drawDiceRow(dice_type, dices_in_place, dices_in_idle, idle, placeName, btn_id);
 		}
 		ImGui::EndTable();
 	}
@@ -109,7 +101,6 @@ void ImGuiLayout::drawDiceRow(DiceWithoutHP dice_type, std::map<DiceWithoutHP, i
 	std::string dice_type_name;
 	int dice_type_quantity;
 	ImVec2 cursor_pos;
-	float offset_y;
 
 	dice_type_name = "D" + std::to_string(dice_type.faces);
 	dice_type_quantity = dices_in_place[dice_type];
@@ -118,23 +109,23 @@ void ImGuiLayout::drawDiceRow(DiceWithoutHP dice_type, std::map<DiceWithoutHP, i
 
 	ImGui::TableSetColumnIndex(0);
 	cursor_pos = ImGui::GetCursorPos();
-	offset_y = (idle ? 1.0f : 3.5f);
-	ImGui::SetCursorPos(ImVec2(cursor_pos.x + (panels_widths[0] - ImGui::CalcTextSize(dice_type_name.data()).x) / 2.0f, cursor_pos.y + offset_y));
+	float offset_y = (idle ? 1.0f : 3.5f);
+	ImGui::SetCursorPos(ImVec2(cursor_pos.x + (panels_widths.at(0) - ImGui::CalcTextSize(dice_type_name.data()).x) / 2.0f, cursor_pos.y + offset_y));
 	ImGui::Text(dice_type_name.data());
 
 
 	ImGui::TableSetColumnIndex(1);
 	cursor_pos = ImGui::GetCursorPos();
-	ImGui::SetCursorPos(ImVec2(cursor_pos.x + panels_widths[1] - 15.0f, cursor_pos.y));
+	ImGui::SetCursorPos(ImVec2(cursor_pos.x + panels_widths.at(1) - 15.0f, cursor_pos.y));
 	if(!idle && dices_in_place[dice_type] > 0)
 	{
 		ImGui::PushID(btn_id);
 		btn_id++;
 		if(ImGui::Button("-"))
 		{
-			Dice d_tmp = DK->find_most_damaged_dice(dice_type, placeName);
+			const Dice d_tmp = DK->find_most_damaged_dice(dice_type, placeName);
 			DK->remove_dice(placeName, d_tmp);
-			DK->add_dice("Idle", d_tmp);
+			DK->add_dice(convert_enum_to_place_name(GameView::KINGDOM_IDLE), d_tmp);
 		}
 		ImGui::PopID();
 	}
@@ -146,7 +137,7 @@ void ImGuiLayout::drawDiceRow(DiceWithoutHP dice_type, std::map<DiceWithoutHP, i
 		offset_y = (idle ? 0.0f : -1.0f);
 	else
 		offset_y = 2.0f;
-	ImGui::SetCursorPos(ImVec2(cursor_pos.x + (panels_widths[2] - ImGui::CalcTextSize(std::to_string(dice_type_quantity).data()).x) / 2.0f, cursor_pos.y + offset_y));
+	ImGui::SetCursorPos(ImVec2(cursor_pos.x + (panels_widths.at(2) - ImGui::CalcTextSize(std::to_string(dice_type_quantity).data()).x) / 2.0f, cursor_pos.y + offset_y));
 	ImGui::Text(std::to_string(dice_type_quantity).data());
 
 	if(!idle && dices_in_idle[dice_type] > 0)
@@ -156,9 +147,9 @@ void ImGuiLayout::drawDiceRow(DiceWithoutHP dice_type, std::map<DiceWithoutHP, i
 		btn_id++;
 		if(ImGui::Button("+"))
 		{
-			Dice d_tmp = DK->find_least_damaged_dice(dice_type, "Idle");
+			const Dice d_tmp = DK->find_least_damaged_dice(dice_type, convert_enum_to_place_name(GameView::KINGDOM_IDLE));
 			DK->add_dice(placeName, d_tmp);
-			DK->remove_dice("Idle", d_tmp);
+			DK->remove_dice(convert_enum_to_place_name(GameView::KINGDOM_IDLE), d_tmp);
 		}
 		ImGui::PopID();
 	}

@@ -1,13 +1,18 @@
 #include "pch.h"
 #include "DiceKingdom.h"
 
-DiceKingdom::DiceKingdom()
+DiceKingdom::DiceKingdom(const std::map<std::string, unsigned int, std::less<>>& starting_resources) : resources(starting_resources)
 {
 	int* _paint = &resources.paint.quantity;
 	lumber.set_paint(_paint);
 	rig.set_paint(_paint);
 	idle.set_paint(_paint);
 
+	init_dice_kingdom_maps();
+}
+
+void DiceKingdom::init_dice_kingdom_maps()
+{
 	map_of_places_with_limited_information["Lumber Camp"] = PlaceWithLimitedInformation(0, -1);
 	map_of_places_with_limited_information["Paint Rig"] = PlaceWithLimitedInformation(1, 0);
 	map_of_places_with_limited_information["Idle"] = PlaceWithLimitedInformation(0, 0);
@@ -48,7 +53,7 @@ std::map<DiceWithoutHP, int, DiceCompareWithoutHP> DiceKingdom::return_dice_arra
 std::set<DiceWithoutHP, DiceCompareWithoutHP> DiceKingdom::return_dice_array_combined_with_idle(const std::string& place)
 {
 	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> map_place = return_dice_array(place);
-	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> map_idle = return_dice_array("Idle");
+	std::map<DiceWithoutHP, int, DiceCompareWithoutHP> map_idle = return_dice_array(convert_enum_to_place_name(GameView::KINGDOM_IDLE));
 	std::set<DiceWithoutHP, DiceCompareWithoutHP> ret;
 	for(auto it = map_place.begin(); it != map_place.end(); it++)
 	{
@@ -87,7 +92,7 @@ Dice DiceKingdom::find_most_damaged_dice(DiceWithoutHP dice, const std::string& 
 	while(it == m.end())
 	{
 		if(d.damage == 0)
-			throw std::invalid_argument("Invalid value in find_most_damaged_dice");
+			throw std::invalid_argument("Invalid argument in find_most_damaged_dice");
 		d.damage--;
 		it = m.find(d);
 	}
@@ -102,7 +107,7 @@ Dice DiceKingdom::find_least_damaged_dice(DiceWithoutHP dice, const std::string&
 	while(it == m.end())
 	{
 		if(d.damage > max_dmg)
-			throw std::invalid_argument("Invalid value in find_least_damaged_dice");
+			throw std::invalid_argument("Invalid argument in find_least_damaged_dice");
 		d.damage++;
 		it = m.find(d);
 	}
@@ -124,7 +129,11 @@ std::string convert_enum_to_place_name(GameView place)
 			return std::string("Lumber Camp");
 		case GameView::KINGDOM_RIG:
 			return std::string("Paint Rig");
-		default:
+		case GameView::MENU:
+		case GameView::MAP:
+		case GameView::KINGDOM:
 			throw std::invalid_argument("Invalid argument in convert_enum_to_place_name: " + std::to_string(static_cast<int> (place)));
+		default:
+			throw std::invalid_argument("Argument in convert_enum_to_place_name is not a correct enum.\n");
 	}
 }

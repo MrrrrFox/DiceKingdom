@@ -7,7 +7,7 @@
 
 class SceneLayout
 {
-	using fun = void (SceneLayout::*)(void) const;
+	using fun = void (SceneLayout::*)(int, int) const;
 
 	unsigned int WIDTH = 600;
 	unsigned int HEIGHT = 400;
@@ -26,21 +26,21 @@ class SceneLayout
 	Spherical playing_camera = Spherical(3.0f, 1.2f, 0.7f);
 
 	public:
-	SceneLayout();
+	explicit SceneLayout(float hex_size);
 	void initScene(std::pair<unsigned int, unsigned int> window_sizes);
-	void reshapeScreen(sf::Vector2u size) const;
+	void reshapeScreen(sf::Vector2u size) const noexcept;
 
-	bool get_perspective_projection() const;
-	Spherical* get_playing_camera();
-	void set_perspective_projection(bool _perspective_projection);
-	void set_width_height(unsigned int width, unsigned int height);
-	void set_map_origin(int _x_map_size, int _z_map_size);
-	void set_hex_size(float _size);
+	bool get_perspective_projection() const noexcept;
+	Spherical* get_playing_camera() noexcept;
+	void set_perspective_projection(bool _perspective_projection) noexcept;
+	void set_width_height(unsigned int width, unsigned int height) noexcept;
+	void set_map_origin(int _x_map_size, int _z_map_size) noexcept;
+	void set_hex_size(float _size) noexcept;
 
 	void DrawMenu() const;
 
-	std::pair<float, float> CalculateHexPosition(int row, int column) const;
-	void DrawColorHex(std::array<GLfloat, 3> color, int row, int column) const;
+	std::pair<float, float> CalculateHexPosition(int row, int column) const noexcept;
+	void DrawColorHex(std::array<GLfloat, 3> color, int row, int column) const noexcept;
 
 	void DrawWorldMap(const std::vector<Terrain>& world_map) const;
 	void DrawTerrain(Terrain terrain) const;
@@ -48,7 +48,7 @@ class SceneLayout
 	void DrawCastle(int row, int column) const;
 
 	void DrawKingdom(std::map<std::string, PlaceWithLimitedInformation, std::less<>> places, float time_to_proc);
-	void DrawIdle() const;
-	void DrawLumber() const;
-	void DrawRig() const;
+	void DrawIdle(int row, int column) const noexcept;
+	void DrawLumber(int row, int column) const;
+	void DrawRig(int row, int column) const;
 };

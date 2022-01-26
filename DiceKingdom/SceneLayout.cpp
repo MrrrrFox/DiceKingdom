@@ -359,7 +359,6 @@ void SceneLayout::DrawLumber(int row, int column) const
 	glVertex3f(0.03f, 0.0, 0.02f);
 	glEnd();
 
-
 	glPushMatrix();
 	glTranslatef(0.03f, 0.0, -0.02f);
 	glColor3f(0.55f, 0.38f, 0.26f);
@@ -440,7 +439,7 @@ void SceneLayout::DrawRig(int row, int column) const
 	glColor3f(0.41f, 0.41f, 0.41f);
 	for(int i = 0; i < 2; ++i)
 	{
-		// floor / roof 
+		// floor / roof
 		glPushMatrix();
 		glTranslatef(0.0, 0.15f + static_cast<float> (i) * 0.10f, 0.0);
 		glBegin(GL_QUADS);
@@ -464,7 +463,6 @@ void SceneLayout::DrawRig(int row, int column) const
 
 	glPopMatrix();
 }
-
 
 void SceneLayout::DrawCastle(int row, int column) const
 {

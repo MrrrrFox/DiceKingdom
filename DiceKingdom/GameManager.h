@@ -5,7 +5,6 @@
 #include "DiceKingdom.h"
 #include "Terrain.h"
 
-
 class GameManager
 {
 	GameView currentView = GameView::MENU;

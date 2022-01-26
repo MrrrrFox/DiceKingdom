@@ -6,7 +6,7 @@ bool Place::is_empty() const noexcept
 	return m.empty();
 }
 
-int Place::count_dices() noexcept
+int Place::count_dices() const noexcept
 {
 	int result = 0;
 	for(auto it = m.begin(); it != m.end(); it++)

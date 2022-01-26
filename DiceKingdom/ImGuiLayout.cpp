@@ -113,7 +113,6 @@ void ImGuiLayout::drawDiceRow(DiceWithoutHP dice_type, std::map<DiceWithoutHP, i
 	ImGui::SetCursorPos(ImVec2(cursor_pos.x + (panels_widths.at(0) - ImGui::CalcTextSize(dice_type_name.data()).x) / 2.0f, cursor_pos.y + offset_y));
 	ImGui::Text(dice_type_name.data());
 
-
 	ImGui::TableSetColumnIndex(1);
 	cursor_pos = ImGui::GetCursorPos();
 	ImGui::SetCursorPos(ImVec2(cursor_pos.x + panels_widths.at(1) - 15.0f, cursor_pos.y));
@@ -129,7 +128,6 @@ void ImGuiLayout::drawDiceRow(DiceWithoutHP dice_type, std::map<DiceWithoutHP, i
 		}
 		ImGui::PopID();
 	}
-
 
 	ImGui::TableSetColumnIndex(2);
 	cursor_pos = ImGui::GetCursorPos();

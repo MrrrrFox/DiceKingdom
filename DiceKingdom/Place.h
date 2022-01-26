@@ -36,7 +36,7 @@ class Place
 		return paint;
 	}
 	bool is_empty() const noexcept;
-	int count_dices() noexcept;
+	int count_dices() const noexcept;
 	void add(const Dice d, unsigned int n = 1);
 	void remove(const Dice d, unsigned int n = 1);
 	unsigned int roll();

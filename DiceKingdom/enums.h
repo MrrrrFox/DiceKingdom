@@ -10,7 +10,6 @@ enum class GameView
 	, KINGDOM_RIG
 };
 
-
 enum class TerrainType
 {
 	DICE_KINGDOM

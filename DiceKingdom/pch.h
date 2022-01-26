@@ -9,12 +9,16 @@
 
 #define _USE_MATH_DEFINES
 
+#pragma warning(push)
+#pragma warning(disable: 26495)
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
 #include <gl/GLU.h>
-#include "imgui/imgui.h" 
-#include "imgui/imgui-SFML.h"
+#include <imgui.h>
+#include <imgui-SFML.h>
+#pragma warning(pop)
+
 #include <iostream>
 #include <cmath>
 #include <algorithm>
